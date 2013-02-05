@@ -24,7 +24,6 @@ namespace Synthesis
         LevelIntro = 3,
         Gameplay = 4,
         LevelEnd = 5,
-        Quiz = 6,
         GameEnd = 7,
         Options = 8,
         Paused = 9,
@@ -59,13 +58,6 @@ namespace Synthesis
         public int score;
         public string grade;
     }
-    public struct Questions
-    {
-        public string Question;
-        public string[] answers;
-        public int correctAns;
-        public int youranswer;
-    }
     public class Game1 : Microsoft.Xna.Framework.Game
     {
 
@@ -83,8 +75,6 @@ namespace Synthesis
         DateTime dt_TutorialTimer = new DateTime(2000, 1, 1, 0, 0, 00);
         int iTutorialState = 0;
         bool b_TutorialFusion = false;
-        int i_CurrentQuestion = 0;
-        int i_CorrectAnswers = 0;
         bool entering = false;
         int i_HighScorePosition = 11;
         int i_TextBubble = 1;
@@ -191,7 +181,6 @@ namespace Synthesis
         Bullet[] tethers;
         Bullet[] stupidline;
         Highscore[] highscores;
-        Questions[] questions;
 
         //menu
         Rectangle newGame;
@@ -379,68 +368,6 @@ namespace Synthesis
             levelBoundsData = new Color[t_LevelBounds.Width * t_LevelBounds.Height];
             t_LevelBounds.GetData(levelBoundsData);
             highscores = new Highscore[10];
-            for (int i = 0; i < 10; i++)
-            {
-                highscores[i].letter1 = 'A';
-                highscores[i].letter2 = 'A';
-                highscores[i].letter3 = 'A';
-                highscores[i].score = ((10 - i) * 100);
-                highscores[i].grade = "N/A";
-            }
-            questions = new Questions[5];
-            for (int i = 0; i < 5; i++)
-            {
-                if (i == 0)
-                {
-                    questions[i].Question = "Why do plants perform photosynthesis?";
-                    questions[i].answers = new string[4];
-                    questions[i].answers[0] = "To lower temperature";
-                    questions[i].answers[1] = "To get rid of toxins";
-                    questions[i].answers[2] = "To make their own food";
-                    questions[i].answers[3] = "To give more oxygen";
-                    questions[i].correctAns = 2;
-                }
-                if (i == 1)
-                {
-                    questions[i].Question = "What are the two products of photosynthesis?";
-                    questions[i].answers = new string[4];
-                    questions[i].answers[0] = "Glucose and Water";
-                    questions[i].answers[1] = "Glucose and Oxygen";
-                    questions[i].answers[2] = "Carbon Dioxide and Water";
-                    questions[i].answers[3] = "Carbon Dioxide and Oxygen";
-                    questions[i].correctAns = 1;
-                }
-                if (i == 2)
-                {
-                    questions[i].Question = "What is glucose NOT used for?";
-                    questions[i].answers = new string[4];
-                    questions[i].answers[0] = "Being turned into starch";
-                    questions[i].answers[1] = "To make amino acids";
-                    questions[i].answers[2] = "Being turned into lipids";
-                    questions[i].answers[3] = "For protection";
-                    questions[i].correctAns = 3;
-                }
-                if (i == 3)
-                {
-                    questions[i].Question = "What is the green pigment in Chloroplasts called?";
-                    questions[i].answers = new string[4];
-                    questions[i].answers[0] = "Chlorophyll";
-                    questions[i].answers[1] = "Chlorine";
-                    questions[i].answers[2] = "Chloride";
-                    questions[i].answers[3] = "Carbohydrate";
-                    questions[i].correctAns = 0;
-                }
-                if (i == 4)
-                {
-                    questions[i].Question = "What is the main requirement of Photosynthesis?";
-                    questions[i].answers = new string[4];
-                    questions[i].answers[0] = "Carbohydrates";
-                    questions[i].answers[1] = "Rainwater";
-                    questions[i].answers[2] = "Other Plants";
-                    questions[i].answers[3] = "Sufficient Light";
-                    questions[i].correctAns = 3;
-                }
-            }
         }
         protected override void UnloadContent()
         {
@@ -1361,35 +1288,6 @@ namespace Synthesis
                     Pulsing();
                 }
             }
-            else if (gameState == State.Quiz)
-            {
-                if (TutMusic.IsPlaying == false)
-                {
-                    TutMusic.Play();
-                }
-                else if (TutMusic.IsPaused == true)
-                {
-                    TutMusic.Resume();
-                }
-                if (b_Flash == true)
-                {
-                    if (i_FlashTimer < 30)
-                    {
-                        i_FlashTimer++;
-                    }
-                    else
-                    {
-                        i_FlashTimer = 0;
-                        i_WhichFlash = -1;
-                        b_Flash = false;
-                        i_CurrentQuestion++;
-                    }
-                }
-                else
-                {
-                    QuestionsUpdate();
-                }
-            }
             else if (gameState == State.Loading)
             {
                 Loading();
@@ -1712,87 +1610,6 @@ namespace Synthesis
                     i_UnderScoreTimer++;
                 }
             }
-            if (gameState == State.Quiz)
-            {
-                if (i_CurrentQuestion < 5)
-                {
-                    spriteBatch.Draw(t_Questions, new Vector2(0, 0), Color.White);
-                    spriteBatch.DrawString(fontQuestion, questions[i_CurrentQuestion].Question, new Vector2(50, 75), Color.White);
-                    for (int i = 0; i < 4; i++)
-                    {
-                        Vector2 Position = Vector2.Zero;
-                        if (i == 0)
-                        {
-                            Position = new Vector2(390, 270);
-                        }
-                        else if (i == 1)
-                        {
-                            Position = new Vector2(655, 455);
-                        }
-                        else if (i == 2)
-                        {
-                            Position = new Vector2(390, 630);
-                        }
-                        else if (i == 3)
-                        {
-                            Position = new Vector2(140, 455);
-                        }
-
-                        if (i_WhichFlash == i)
-                        {
-                            spriteBatch.DrawString(fontTimer, questions[i_CurrentQuestion].answers[i], Position, new Color(1.0f, (i_FlashTimer / 30f), (i_FlashTimer / 30f), 1.0f));
-                        }
-                        else
-                        {
-                            spriteBatch.DrawString(fontTimer, questions[i_CurrentQuestion].answers[i], Position, Color.White);
-                        }
-                    }
-                }
-                else
-                {
-                    spriteBatch.Draw(t_Answers, new Vector2(0, 0), Color.White);
-                    spriteBatch.DrawString(fontTimer, "1.", new Vector2(100, 40), Color.Black);
-                    spriteBatch.DrawString(fontTimer, "2.", new Vector2(100, 160), Color.Black);
-                    spriteBatch.DrawString(fontTimer, "3.", new Vector2(100, 285), Color.Black);
-                    spriteBatch.DrawString(fontTimer, "4.", new Vector2(100, 410), Color.Black);
-                    spriteBatch.DrawString(fontTimer, "5.", new Vector2(100, 530), Color.Black);
-                    spriteBatch.DrawString(fontTimer, questions[0].Question, new Vector2(165, 40), Color.Black);
-                    spriteBatch.DrawString(fontTimer, questions[1].Question, new Vector2(165, 160), Color.Black);
-                    spriteBatch.DrawString(fontTimer, questions[2].Question, new Vector2(165, 285), Color.Black);
-                    spriteBatch.DrawString(fontTimer, questions[3].Question, new Vector2(165, 410), Color.Black);
-                    spriteBatch.DrawString(fontTimer, questions[4].Question, new Vector2(165, 530), Color.Black);
-
-                    for (int i = 0; i < 5; i++)
-                    {
-                        spriteBatch.DrawString(fontTimer, questions[i].answers[questions[i].correctAns], new Vector2(500, 95 + (i * 125)), Color.Black);
-                        if (questions[i].youranswer == questions[i].correctAns)
-                        {
-                            spriteBatch.DrawString(fontTimer, questions[i].answers[questions[i].youranswer], new Vector2(75, 95 + (i * 125)), Color.Green);
-                            spriteBatch.Draw(t_Tick, new Vector2(850, 30 + (i*125)), Color.White);
-
-                        }
-                        else
-                        {
-                            spriteBatch.DrawString(fontTimer, questions[i].answers[questions[i].youranswer], new Vector2(75, 95 + (i * 125)), Color.Red);
-                            spriteBatch.Draw(t_Cross, new Vector2(850, 30 + (i * 125)), Color.White);
-
-                        }
-                        spriteBatch.DrawString(fontBig, i_CorrectAnswers + "/5", new Vector2(760, 626), Color.Black);
-                        spriteBatch.DrawString(fontTimer, "Game Score:", new Vector2(450, 650), Color.Black);
-                        spriteBatch.DrawString(fontTimer, "Quiz Score:", new Vector2(471, 680), Color.Black);
-                        spriteBatch.DrawString(fontTimer, "Total Score:", new Vector2(465, 710), Color.Black);
-                        spriteBatch.DrawString(fontTimer, f_Score.ToString("0000"), new Vector2(650, 650), Color.Black);
-                        spriteBatch.DrawString(fontTimer, f_QuizScore.ToString("0000"), new Vector2(650, 680), Color.Black);
-                        spriteBatch.DrawString(fontTimer, f_TotalScore.ToString("0000"), new Vector2(650, 710), Color.Black);
-                    }
-                }
-            }
-
-            //if (GamePad.GetState(PlayerIndex.One).IsConnected == false)
-            //{
-            //    spriteBatch.Draw(t_BlackScreen, new Vector2(0, 0), new Color(1f, 1f, 1f, 0.7f));
-            //    spriteBatch.DrawString(fontTimer, "Please connect controller to port 1!", new Vector2((graphics.PreferredBackBufferWidth / 2) - 220, (graphics.PreferredBackBufferHeight / 2) - 6), Color.White);
-            //}
 
             spriteBatch.End();
             base.Draw(gameTime);
@@ -2463,13 +2280,6 @@ namespace Synthesis
                             Reset();
                             gameState = State.Gameplay;
                         }
-                        else if (i_GameOverSel == 1)
-                        {
-                            InitalizeLevel(0);
-                            gameState = State.Quiz;
-                            TutMusic.SetVariable("Volume", 100);
-                            TutMusic.Resume();
-                        }
                         else if (i_GameOverSel == 2)
                         {
                             InitalizeLevel(0);
@@ -2567,13 +2377,6 @@ namespace Synthesis
                         Reset();
                         gameState = State.Gameplay;
                     }
-                    else if (i_GameOverSel == 1)
-                    {
-                        InitalizeLevel(0);
-                        gameState = State.Quiz;
-                        TutMusic.SetVariable("Volume", 100);
-                        TutMusic.Resume();
-                    }
                     else if (i_GameOverSel == 2)
                     {
                         InitalizeLevel(0);
@@ -2666,8 +2469,6 @@ namespace Synthesis
             dt_TutorialTimer = new DateTime(2000, 1, 1, 0, 0, 00);
             iTutorialState = 0;
             b_TutorialFusion = false;
-            i_CurrentQuestion = 0;
-            i_CorrectAnswers = 0;
             entering = false;
             dt_timer = new DateTime(1901, 1, 1, 0, 5, 00);
             i_SoundCounter2 = 0;
@@ -4218,264 +4019,6 @@ namespace Synthesis
                     }
                 }
             }
-        }
-        public void QuestionsUpdate()
-        {
-            #region Controller
-            GamePadState gamepadStateCurr = GamePad.GetState(PlayerIndex.One);
-            if (gamepadStateCurr.IsButtonDown(Buttons.Y))
-            {
-                if (!(gamepadStateOld.IsButtonDown(Buttons.Y)))
-                {
-                    if (i_CurrentQuestion < 5)
-                    {
-                        questions[i_CurrentQuestion].youranswer = 0;
-                        if (questions[i_CurrentQuestion].correctAns == 0)
-                        {
-                            //Answered Correctly
-                            i_CorrectAnswers++;
-                        }
-                        else
-                        {
-                            //Incorrect
-                        }
-                        b_Flash = true;
-                        i_WhichFlash = 0;
-                        soundBank.PlayCue("Confirm");
-                    }
-                    else
-                    {
-                    }
-                }
-            }
-            if (gamepadStateCurr.IsButtonDown(Buttons.B))
-            {
-                if (!(gamepadStateOld.IsButtonDown(Buttons.B)))
-                {
-                    if (i_CurrentQuestion < 5)
-                    {
-                        questions[i_CurrentQuestion].youranswer = 1;
-                        if (questions[i_CurrentQuestion].correctAns == 1)
-                        {
-                            //Answered Correctly
-                            i_CorrectAnswers++;
-                        }
-                        else
-                        {
-                            //Incorrect
-                        }
-                        b_Flash = true;
-                        i_WhichFlash = 1;
-                        soundBank.PlayCue("Confirm");
-                    }
-                    else
-                    {
-                    }
-                }
-            }
-            if (gamepadStateCurr.IsButtonDown(Buttons.A))
-            {
-                if (!(gamepadStateOld.IsButtonDown(Buttons.A)))
-                {
-                    if (i_CurrentQuestion < 5)
-                    {
-                        questions[i_CurrentQuestion].youranswer = 2;
-                        if (questions[i_CurrentQuestion].correctAns == 2)
-                        {
-                            //Answered Correctly
-                            i_CorrectAnswers++;
-                        }
-                        else
-                        {
-                            //Incorrect
-                        }
-                        b_Flash = true;
-                        i_WhichFlash = 2;
-                        soundBank.PlayCue("Confirm");
-                    }
-                    else
-                    {
-                        //Questions Ended
-                        i_NewScore = (int)f_TotalScore;
-                        Grade(i_NewScore);
-                        s_NewGrade = s_grade;
-                        UpdateHighScoreTable();
-                        gameState = State.HighScore;
-                    }
-                }
-            }
-            if (gamepadStateCurr.IsButtonDown(Buttons.X))
-            {
-                if (!(gamepadStateOld.IsButtonDown(Buttons.X)))
-                {
-                    if (i_CurrentQuestion < 5)
-                    {
-                        questions[i_CurrentQuestion].youranswer = 3;
-                        if (questions[i_CurrentQuestion].correctAns == 3)
-                        {
-                            //Answered Correctly
-                            i_CorrectAnswers++;
-                        }
-                        else
-                        {
-                            //Incorrect
-                        }
-                        b_Flash = true;
-                        i_WhichFlash = 3;
-                    }
-                    else
-                    {
-                    }
-                    soundBank.PlayCue("Confirm");
-                }
-            }
-            if (i_CurrentQuestion == 5)
-            {
-                f_QuizScore = 500 * i_CorrectAnswers;
-                f_TotalScore = f_Score + f_QuizScore;
-            }
-            gamepadStateOld = gamepadStateCurr;
-            #endregion
-            #region Keyboard
-            if (Keyboard.GetState().IsKeyDown(Keys.D1))
-            {
-                if (last1 == false)
-                {
-                    if (i_CurrentQuestion < 5)
-                    {
-                        questions[i_CurrentQuestion].youranswer = 0;
-                        if (questions[i_CurrentQuestion].correctAns == 0)
-                        {
-                            //Answered Correctly
-                            i_CorrectAnswers++;
-                        }
-                        else
-                        {
-                            //Incorrect
-                        }
-                        b_Flash = true;
-                        i_WhichFlash = 0;
-                        soundBank.PlayCue("Confirm");
-                    }
-                    else
-                    {
-                    }
-                }
-                last1 = true;
-            }
-            else
-            {
-                last1 = false;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.D3))
-            {
-                if (last3 == false)
-                {
-                    if (i_CurrentQuestion < 5)
-                    {
-                        questions[i_CurrentQuestion].youranswer = 1;
-                        if (questions[i_CurrentQuestion].correctAns == 1)
-                        {
-                            //Answered Correctly
-                            i_CorrectAnswers++;
-                        }
-                        else
-                        {
-                            //Incorrect
-                        }
-                        b_Flash = true;
-                        i_WhichFlash = 1;
-                        soundBank.PlayCue("Confirm");
-                    }
-                    else
-                    {
-                    }
-                }
-                last3 = true;
-            }
-            else
-            {
-                last3 = false;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.D4))
-            {
-                if (last4 == false)
-                {
-                    if (i_CurrentQuestion < 5)
-                    {
-                        questions[i_CurrentQuestion].youranswer = 2;
-                        if (questions[i_CurrentQuestion].correctAns == 2)
-                        {
-                            //Answered Correctly
-                            i_CorrectAnswers++;
-                        }
-                        else
-                        {
-                            //Incorrect
-                        }
-                        b_Flash = true;
-                        i_WhichFlash = 2;
-                        soundBank.PlayCue("Confirm");
-                    }
-                    else
-                    {
-                    }
-                }
-                last4 = true;
-            }
-            else
-            {
-                last4 = false;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.D2))
-            {
-                if (last2 == false)
-                {
-                    if (i_CurrentQuestion < 5)
-                    {
-                        questions[i_CurrentQuestion].youranswer = 3;
-                        if (questions[i_CurrentQuestion].correctAns == 3)
-                        {
-                            //Answered Correctly
-                            i_CorrectAnswers++;
-                        }
-                        else
-                        {
-                            //Incorrect
-                        }
-                        b_Flash = true;
-                        i_WhichFlash = 3;
-                    }
-                    else
-                    {
-                    }
-                    soundBank.PlayCue("Confirm");
-                }
-                last2 = true;
-            }
-            else
-            {
-                last2 = false;
-            }
-            if (i_CurrentQuestion == 5)
-            {
-                f_QuizScore = 500 * i_CorrectAnswers;
-                f_TotalScore = f_Score + f_QuizScore;
-            }
-
-            if (Keyboard.GetState().IsKeyDown(Keys.Enter))
-            {
-                if (i_CurrentQuestion == 5)
-                {
-                    //Questions Ended
-                    i_NewScore = (int)f_TotalScore;
-                    Grade(i_NewScore);
-                    s_NewGrade = s_grade;
-                    UpdateHighScoreTable();
-                    gameState = State.HighScore;
-                }
-            }
-            #endregion
         }
     }
 }
