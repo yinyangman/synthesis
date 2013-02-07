@@ -112,7 +112,7 @@ namespace Synthesis
                     for (int i = 0; i < PhotonsMax; i++)
                     {
                         float distance = Vector2.Distance(photons[i].Position, Position);
-                        if ((distance < currentPhoton) && photons[i].BeingAttacked == false && photons[i].ParticleState == Particle.State.Alive && photons[i].IsTethered == false)
+                        if ((distance < currentPhoton) && photons[i].BeingAttacked == false && photons[i].ParticleState == Particle.PState.Alive && photons[i].IsTethered == false)
                         {
                             currentPhoton = distance;
                             ClosestPhoton = i;
@@ -121,7 +121,7 @@ namespace Synthesis
                     for (int i = 0; i < ChlorosMax; i++)
                     {
                         float distance = Vector2.Distance(chloros[i].Position, Position);
-                        if (distance < currentChloro && chloros[i].BeingAttacked == false && chloros[i].ParticleState == Particle.State.Alive && chloros[i].IsTethered == false)
+                        if (distance < currentChloro && chloros[i].BeingAttacked == false && chloros[i].ParticleState == Particle.PState.Alive && chloros[i].IsTethered == false)
                         {
                             currentChloro = distance;
                             ClosestChloro = i;
@@ -178,13 +178,13 @@ namespace Synthesis
                         {
                             p_ParticleKilled = chloros[ClosestChloro];
                             ParticleKillPosition = chloros[ClosestChloro].Position + new Vector2((chloros[ClosestChloro].Texture.Width / 2), (chloros[ClosestChloro].Texture.Height / 2));
-                            chloros[ClosestChloro].ParticleState = Particle.State.Dead;
+                            chloros[ClosestChloro].ParticleState = Particle.PState.Dead;
                         }
                         else if (desiredParticle == ParticleWant.Photon)
                         {
                             p_ParticleKilled = photons[ClosestPhoton];
                             ParticleKillPosition = photons[ClosestPhoton].Position + new Vector2((photons[ClosestPhoton].Texture.Width / 2), (photons[ClosestPhoton].Texture.Height / 2));
-                            photons[ClosestPhoton].ParticleState = Particle.State.Dead;
+                            photons[ClosestPhoton].ParticleState = Particle.PState.Dead;
                         }
                         attacking = false;
                         IsParticleKill = true;

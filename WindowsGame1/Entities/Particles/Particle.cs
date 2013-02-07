@@ -10,7 +10,7 @@ namespace Synthesis
 {
     public class Particle : Entity
     {
-        public enum State
+        public enum PState
         {
             Alive = 0,
             Spawning = 1,
@@ -20,7 +20,7 @@ namespace Synthesis
         }
         private bool b_beingAttacked = false;
         private Enemy e_Attacker;
-        private State s_ParticleState = State.Dead;
+        private PState s_ParticleState = PState.Dead;
         private int i_SpawnTimer = 0;
         private float f_Scale = 0;
         private Vector2 v_FusionPosition;
@@ -33,7 +33,7 @@ namespace Synthesis
 
         private bool isTethered;
 
-        public Particle(Rectangle bounding, Game1 game)                   //constructor
+        public Particle(Rectangle bounding)                   //constructor
         {
             vPosition = new Vector2(Game1.Random.Next((bounding.X + 100), (bounding.X + bounding.Width - 100)), Game1.Random.Next(bounding.Y + 100, (bounding.Y + bounding.Height - 100)));
             state = entityState.stationary;   //initial state
@@ -45,7 +45,7 @@ namespace Synthesis
             isTethered = false;
 
         }
-        public Particle(Vector2 position, Game1 game)                   //constructor
+        public Particle(Vector2 position)                   //constructor
         {
             vPosition = position;
             state = entityState.stationary;   //initial state
@@ -78,12 +78,12 @@ namespace Synthesis
             {
                 Position = new Vector2(Game1.Random.Next(bounding.X + 100, (bounding.X + bounding.Width - 100)), Game1.Random.Next((bounding.Y + (bounding.Height / 2)) + 100, (bounding.Y + bounding.Height - 100)));
             }
-            ParticleState = State.Spawning;
+            ParticleState = PState.Spawning;
         }
         public void Spawn(Vector2 position)
         {
             Position = position;
-            ParticleState = State.Spawning;
+            ParticleState = PState.Spawning;
         }
 
         public int SpawnTimer
@@ -122,7 +122,7 @@ namespace Synthesis
             }
         }
 
-        public State ParticleState
+        public PState ParticleState
         {
             get
             {

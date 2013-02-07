@@ -2,7 +2,6 @@ Content\Ship\turret.xnb
 Content\Particles\Chloroplasts.xnb
 Content\Particles\Fused.xnb
 Content\Particles\Photon.xnb
-Content\Ship\Ship.xnb
 Content\mightypixel.xnb
 Content\Ship\engine_smoke.xnb
 Content\Enemies\enemy_big.xnb
@@ -127,6 +126,7 @@ Content\Audio\wavs\sideBump.xnb
 Content\Audio\wavs\tutMusic.xnb
 Content\Audio\wavs\tutMusicORIG.xnb
 Content\Audio\wavs\Victory.xnb
+Content\Ship\Ship.xnb
 Content\Audio\sound.xgs
 Content\Audio\Wave Bank.xwb
 Content\Audio\Sound Bank.xsb

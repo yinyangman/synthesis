@@ -75,7 +75,7 @@ namespace Synthesis
         ///////////////////////////////////////////////////////////
         //updatePosition - this overides the update from the Entity class
         //because the bounding rectangle is updated elsewhere
-        public void updatePosition(float Time, float Friction, TetherState tethering)
+        public void updatePosition(float Time, float Friction, Engine.TetherState tethering)
         {
             if (hit)
             {
