@@ -556,6 +556,7 @@ namespace Synthesis
             //spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.SaveState);
 
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied);
+            //spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
 
             if (gameState == State.Menu)
             {

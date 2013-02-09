@@ -3,7 +3,6 @@ Content\Particles\Chloroplasts.xnb
 Content\Particles\Fused.xnb
 Content\Particles\Photon.xnb
 Content\mightypixel.xnb
-Content\Ship\engine_smoke.xnb
 Content\Enemies\enemy_big.xnb
 Content\Enemies\Enemy_Small.xnb
 Content\Ship\ShieldTemp.xnb
@@ -127,6 +126,7 @@ Content\Audio\wavs\tutMusic.xnb
 Content\Audio\wavs\tutMusicORIG.xnb
 Content\Audio\wavs\Victory.xnb
 Content\Ship\Ship.xnb
+Content\Ship\engine_smoke.xnb
 Content\Audio\sound.xgs
 Content\Audio\Wave Bank.xwb
 Content\Audio\Sound Bank.xsb

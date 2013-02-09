@@ -1232,7 +1232,6 @@ namespace Synthesis
             game.Components.Add(engineSmoke);
             shipExplosion = new ExplosionParticleSystem(game, 9);
             game.Components.Add(shipExplosion);
-
         }
 
         public void UpdateEngineSmoke()

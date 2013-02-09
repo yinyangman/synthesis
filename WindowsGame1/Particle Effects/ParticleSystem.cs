@@ -354,7 +354,7 @@ namespace Synthesis
                 // since we want the maximum alpha to be 1, not .25, we'll scale the 
                 // entire equation by 4.
                 float alpha = 4 * normalizedLifetime * (1 - normalizedLifetime);
-                p.Color.A = (byte)alpha;
+                p.Color.A = (byte)(alpha*255);
                 
                 // make particles grow as they age. they'll start at 75% of their size,
                 // and increase to 100% once they're finished.
