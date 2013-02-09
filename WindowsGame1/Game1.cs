@@ -88,7 +88,6 @@ namespace Synthesis
         int i_SoundCounter2 = 0;
 
         //Textures
-        public Texture2D t_BlackScreen;
         Texture2D menuImage;
         Texture2D controlsImage;
         Texture2D optionsImage;
@@ -156,7 +155,6 @@ namespace Synthesis
         //Fadings
         public Fader fd_Fader;
 
-        public byte by_BlackCounter = 0;
         float f_BlackAlpha = 0;
         float f_Stats1Alpha = 0;
         float f_Stats2Alpha = 0;
@@ -165,7 +163,6 @@ namespace Synthesis
         float f_ChoicesAlpha = 0;
         float f_LvlCompleteAlpha = 0;
         float f_GradeAlpha = 0;
-        bool b_fading = false;
 
         //Misc
         Color text1Colour = Color.Red;
@@ -208,7 +205,7 @@ namespace Synthesis
             gameEngine.Initialize(soundBank);
 
             fd_Fader = new Fader();
-            fd_Fader.Initialize();
+            fd_Fader.Initialize(this);
 
             base.Initialize();
         }
@@ -216,7 +213,6 @@ namespace Synthesis
         {
             //Loading();
             // Create a new SpriteBatch, which can be used to draw textures.
-            t_BlackScreen = Content.Load<Texture2D>("MenusBGrounds//BlackScreen");
             t_ButtonA = Content.Load<Texture2D>("Buttons//ButtonA");
             t_ButtonB = Content.Load<Texture2D>("Buttons//ButtonB");
             t_ButtonX = Content.Load<Texture2D>("Buttons//ButtonX");
@@ -251,11 +247,15 @@ namespace Synthesis
         }
         protected override void Update(GameTime gameTime)
         {
-            //Updated Fader
-            fd_Fader.Update(gameTime);
-
             // Update the audio engine.
             engine.Update();
+
+            //Updat Fader
+            if (fd_Fader.fadingMode != Fader.FadingMode.NoFade)
+            {
+                fd_Fader.Update(gameTime);
+                return;
+            }
 
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -271,20 +271,6 @@ namespace Synthesis
                 {
                     MenuMusic.Resume();
                 }
-                if (b_fading == true)
-                {
-                    if (by_BlackCounter == 50)
-                    {
-                        gameState = State.Loading;
-                        by_BlackCounter = 0;
-                        b_fading = false;
-                    }
-                    else
-                    {
-                        by_BlackCounter++;
-                        MenuMusic.SetVariable("Volume", (100 - (by_BlackCounter * 2)));
-                    }
-                }
                 else
                 {
                     MenuControlsCheck();
@@ -297,41 +283,14 @@ namespace Synthesis
                 if ((GamePad.GetState(PlayerIndex.One).Buttons.X == ButtonState.Pressed && GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed) || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 {
                     v_Video1.Stop();
-                    b_fading = true;
-                    by_BlackCounter = 0;
-                }
-
-                if (b_fading == true)
-                {
-                    if (by_BlackCounter < 50)
-                    {
-                        by_BlackCounter++;
-                    }
-                    else
-                    {
-                        v_Video1.Dispose();
-                        by_BlackCounter = 0;
-                        b_fading = false;
-
-                        if (TutorialOn == true)
-                        {
-                            gameEngine.InitalizeLevel(tutorialLevel, this);
-                            gameState = State.Tutorial;
-                        }
-                        else if (TutorialOn == false)
-                        {
-                            gameEngine.i_ShipCounter = 75;
-                            gameEngine.InitalizeLevel(level1, this);
-                            gameState = State.Gameplay;
-                        }
-                    }
+                    fd_Fader.BeginFadingToBlack(75, true, this);
                 }
                 else
                 {
                     if (v_Video1.CurrentPosition == v_Video1.Duration)
                     {
                         v_Video1.Stop();
-                        b_fading = true;
+                        fd_Fader.BeginFadingToBlack(75, true, this);
                     }
                     else
                     {
@@ -475,10 +434,6 @@ namespace Synthesis
             else if (gameState == State.GameEnd)
             {
                 #region GameEnd Update
-                if (by_BlackCounter > 0)
-                {
-                    by_BlackCounter--;
-                }
                 if (b_LevelComplete == false)
                 {
                     if (GameOver.IsPlaying == false)
@@ -529,7 +484,7 @@ namespace Synthesis
             {
                 #region Loading
                 Loading();
-                gameState = State.GameIntro;
+                fd_Fader.BeginFadingToBlack(75, true, this);
                 #endregion
             }
             else if (gameState == State.LevelIntro)
@@ -579,7 +534,6 @@ namespace Synthesis
                     spriteBatch.Draw(t_Quit, new Vector2(694, 655), Color.White);
                     spriteBatch.Draw(t_ButtonA, new Vector2(640, 665), null, Color.White, 0, new Vector2(0, 0), new Vector2(0.6f, 0.6f), SpriteEffects.None, 0);
                 }
-                spriteBatch.Draw(t_BlackScreen, new Vector2(0, 0), new Color(1, 1, 1, (by_BlackCounter / 50f)));
                 #endregion
             }
             else if (gameState == State.Controls)
@@ -620,7 +574,6 @@ namespace Synthesis
                 spriteBatch.DrawString(font, "Press        +         to skip intro", new Vector2(10, 740), Color.Black);
                 spriteBatch.Draw(t_ButtonA, new Vector2(65, 735), null, Color.White, 0, new Vector2(0, 0), new Vector2(0.4f, 0.4f), SpriteEffects.None, 0.1f);
                 spriteBatch.Draw(t_ButtonX, new Vector2(117, 735), null, Color.White, 0, new Vector2(0, 0), new Vector2(0.4f, 0.4f), SpriteEffects.None, 0.1f);
-                spriteBatch.Draw(t_BlackScreen, new Vector2(0, 0), new Color(1, 1, 1, (by_BlackCounter / 50f)));
                 #endregion
             }
             else if (gameState == State.Loading)
@@ -643,7 +596,6 @@ namespace Synthesis
                 #region Gameplay Draw
                 level1.Draw(gameTime, spriteBatch, gameEngine, this);
                 gameEngine.Draw(gameTime, spriteBatch, this);
-                spriteBatch.Draw(t_BlackScreen, new Vector2(0, 0), new Color(1, 1, 1, (by_BlackCounter / 75f)));
                 #endregion
             }
             else if (gameState == State.Tutorial)
@@ -651,7 +603,6 @@ namespace Synthesis
                 #region Tutorial Draw
                 tutorialLevel.Draw(gameTime, spriteBatch, gameEngine, this);
                 gameEngine.Draw(gameTime, spriteBatch, this);
-                spriteBatch.Draw(t_BlackScreen, new Vector2(0, 0), new Color(1, 1, 1, (by_BlackCounter / 75f)));
                 #endregion
             }
             else if (gameState == State.Paused)
@@ -659,13 +610,11 @@ namespace Synthesis
                 #region Paused Draw
                 gameEngine.Draw(gameTime, spriteBatch, this);
                 level1.Draw(gameTime, spriteBatch, gameEngine, this);
-                spriteBatch.Draw(t_BlackScreen, new Vector2(0, 0), new Color(1, 1, 1, (by_BlackCounter / 75f)));
                 #endregion
             }
             if (gameState == State.GameEnd)
             {
                 #region GameEnd Draw
-                spriteBatch.Draw(t_BlackScreen, new Vector2(0, 0), new Color(1f, 1f, 1f, f_BlackAlpha));
                 spriteBatch.Draw(level1.t_WinEndBackground, new Vector2(0, 0), Color.White);
                 spriteBatch.DrawString(font, "Enemies(Small) Killed: ", new Vector2(100, 500), new Color(1f, 1f, 1f, f_Stats1Alpha));
                 spriteBatch.DrawString(font, "Enemies(Big) Killed: ", new Vector2(119, 530), new Color(1f, 1f, 1f, f_Stats2Alpha));
@@ -693,8 +642,6 @@ namespace Synthesis
                 {
                     spriteBatch.Draw(t_GOQuit, new Vector2(670, 655), Color.White);
                 }
-
-                spriteBatch.Draw(t_BlackScreen, new Vector2(0, 0), new Color(1, 1, 1, (by_BlackCounter / 75f)));
                 #endregion
             }
             if (gameState == State.HighScore)
@@ -751,6 +698,39 @@ namespace Synthesis
 
             spriteBatch.End();
             base.Draw(gameTime);
+        }
+
+        public void FinishedFadingToBlack(Game1 game)
+        {
+            if (gameState == State.Menu)
+            {
+                gameState = State.Loading;
+            }
+            else if (gameState == State.Loading)
+            {
+                gameState = State.GameIntro;
+            }
+            else if (gameState == State.GameIntro)
+            {
+                v_Video1.Dispose();
+
+                if (TutorialOn == true)
+                {
+                    gameEngine.InitalizeLevel(tutorialLevel, this);
+                    gameState = State.Tutorial;
+                }
+                else if (TutorialOn == false)
+                {
+                    gameEngine.i_ShipCounter = 75;
+                    gameEngine.InitalizeLevel(level1, this);
+                    gameState = State.Gameplay;
+                }
+            }
+            else if (gameState == State.Gameplay)
+            {
+                gameEngine.Ambient.Pause();
+                gameState = State.GameEnd;
+            }
         }
 
         void MouseClick()
@@ -832,7 +812,7 @@ namespace Synthesis
             {
                 if (selected == 1)
                 {
-                    b_fading = true;
+                    fd_Fader.BeginFadingToBlack(75, true, this);
                 }
                 else if (selected == 2)
                 {
@@ -903,7 +883,7 @@ namespace Synthesis
                 {
                     if (selected == 1)
                     {
-                        b_fading = true;
+                        fd_Fader.BeginFadingToBlack(75, true, this);
                     }
                     else if (selected == 2)
                     {
@@ -1695,6 +1675,7 @@ namespace Synthesis
                 }
             }
         }
+
 
     }
 }

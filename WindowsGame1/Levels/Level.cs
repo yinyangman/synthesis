@@ -82,5 +82,9 @@ namespace Synthesis
         void TimeUp()
         {
         }
+
+        public void FinishedFadingToBlack(Game1 game)
+        {
+        }
     }
 }

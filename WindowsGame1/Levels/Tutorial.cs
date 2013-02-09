@@ -490,17 +490,8 @@ namespace Synthesis
             }
             else if (iTutorialState == 13)
             {
-                if (game.by_BlackCounter == 75)
-                {
-                    game.gameState = State.LevelIntro;
-                    TutMusic.Pause();
-                    dt_TutorialTimer = new DateTime(2000, 1, 1, 0, 0, 0, 0);
-                }
-                else
-                {
-                    game.by_BlackCounter++;
-                    TutMusic.SetVariable("Volume", (100 - (game.by_BlackCounter * (1 + (1 / 3)))));
-                }
+                game.fd_Fader.BeginFadingToBlack(75, true, this);
+                iTutorialState++;
             }
         }
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, Engine engine, Game1 game)
@@ -586,6 +577,13 @@ namespace Synthesis
                     i_GridCounter -= 0.5f;
                 }
             }
+        }
+
+        public void FinishedFadingToBlack(Game1 game)
+        {
+            game.gameState = State.LevelIntro;
+            TutMusic.Pause();
+            dt_TutorialTimer = new DateTime(2000, 1, 1, 0, 0, 0, 0);
         }
     }
 }

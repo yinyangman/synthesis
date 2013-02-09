@@ -17,18 +17,22 @@ namespace Synthesis
             FadeIn
         }
 
-        int i_MasterFaderCounter = 0;
-        int i_MasterFaderMax = 75;
+        public delegate void FinishedFadingToBlackDelegate(Game1 game);
+        FinishedFadingToBlackDelegate fadeToBlackDelegate;
+
+        public FadingMode fadingMode;
+        float i_MasterFaderCounter = 0;
+        float i_MasterFaderMax = 75;
         bool b_FadeInAgain = false;
-        Texture2D t_MasterFadeBlack;
-        FadingMode fadingMode;
+        public Texture2D t_MasterFadeBlack;
+        Game1 game;
 
         public Fader()
         {
         }
-        public void Initialize()
+        public void Initialize(Game1 newGame)
         {
-
+            game = newGame;
         }
         public void LoadContent(ContentManager Content)
         {
@@ -47,18 +51,41 @@ namespace Synthesis
         }
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(t_MasterFadeBlack, new Vector2(0, 0), new Color(1, 1, 1, (byte)((i_MasterFaderCounter / i_MasterFaderMax) * 255)));
+            if (fadingMode != FadingMode.NoFade)
+            {
+                Color colour = new Color(1,1,1);
+                colour.A = (byte)((i_MasterFaderCounter / i_MasterFaderMax) * 255);
+
+                spriteBatch.Draw(t_MasterFadeBlack, new Vector2(0, 0), colour);
+            }
         }
 
-        void BeginFadingToBlack(int max, bool fadeIn)
+        void BeginFadingToBlack(float max, bool fadeIn)
         {
             i_MasterFaderCounter = 0;
             b_FadeInAgain = fadeIn;
             i_MasterFaderMax = max;
             fadingMode = FadingMode.FadeToBlack;
         }
-        void FinishedFadingToBlack()
+        public void BeginFadingToBlack(float max, bool fadeIn, Tutorial tutorial)
         {
+            BeginFadingToBlack(max, fadeIn);
+            fadeToBlackDelegate = new FinishedFadingToBlackDelegate(tutorial.FinishedFadingToBlack);
+        }
+        public void BeginFadingToBlack(float max, bool fadeIn, Level level)
+        {
+            BeginFadingToBlack(max, fadeIn);
+            fadeToBlackDelegate = new FinishedFadingToBlackDelegate(level.FinishedFadingToBlack);
+        }
+        public void BeginFadingToBlack(float max, bool fadeIn, Game1 game)
+        {
+            BeginFadingToBlack(max, fadeIn);
+            fadeToBlackDelegate = new FinishedFadingToBlackDelegate(game.FinishedFadingToBlack);
+        }
+        void FinishedFadingToBlack(Game1 game)
+        {
+            fadeToBlackDelegate(game);
+
             if (b_FadeInAgain == true)
             {
                 BeginFadingIn(i_MasterFaderMax);
@@ -66,11 +93,9 @@ namespace Synthesis
             else
             {
                 fadingMode = FadingMode.NoFade;
-                //Finished fading to black
-                //Send a notification somehow
             }
         }
-        void BeginFadingIn(int max)
+        void BeginFadingIn(float max)
         {
             i_MasterFaderCounter = max;
             i_MasterFaderMax = max;
@@ -89,7 +114,7 @@ namespace Synthesis
             if (i_MasterFaderCounter >= i_MasterFaderMax)
             {
                 //Fading To Black Finished
-                FinishedFadingToBlack();
+                FinishedFadingToBlack(game);
             }
             else
             {

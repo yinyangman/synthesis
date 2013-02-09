@@ -80,13 +80,12 @@ namespace Synthesis
         public Texture2D t_Crosshair;
 
         //Audio
-        Cue Ambient;
+        public Cue Ambient;
 
         //Misc
         public float f_Friction = 0.987f;
         public float f_EdgeDamper = 0.7f;
         public int i_VibrateCounter = 0;
-        public bool b_start = true;
 
         //Particle Systems
         public EngineParticleSystem engineSmoke;
@@ -127,18 +126,6 @@ namespace Synthesis
         {
             if (game.gameState != State.Tutorial)
             {
-                if (b_start == true)
-                {
-                    if (game.by_BlackCounter > 0)
-                    {
-                        game.by_BlackCounter--;
-                    }
-                    else
-                    {
-                        b_start = false;
-                    }
-                }
-
                 SegmentUpdate();
 
                 if (Ambient.IsPlaying == false)
@@ -153,28 +140,11 @@ namespace Synthesis
                 {
                     game.i_GameOverSel = 1;
                     game.f_LevelCompleteBonus = 500;
-                    if (game.by_BlackCounter == 75)
-                    {
-                        soundBank.PlayCue("Victory");
-                        game.gameState = State.GameEnd;
-                        Ambient.Pause();
-                    }
-                    else
-                    {
-                        game.by_BlackCounter++;
-                    }
+                    game.fd_Fader.BeginFadingToBlack(75, true, game);
                 }
                 if (dt_timer.Minute == 0 && dt_timer.Second == 0)
                 {
-                    if (game.by_BlackCounter == 75)
-                    {
-                        game.gameState = State.GameEnd;
-                        Ambient.Pause();
-                    }
-                    else
-                    {
-                        game.by_BlackCounter++;
-                    }
+                    game.fd_Fader.BeginFadingToBlack(75, true, game);
                 }
                 else
                 {
@@ -488,16 +458,7 @@ namespace Synthesis
                 }
                 else
                 {
-                    if (game.by_BlackCounter == 75)
-                    {
-                        loadedLevel.t_WinEndBackground = game.Content.Load<Texture2D>("MenusBGrounds//Game over screen");
-                        game.gameState = State.GameEnd;
-                        Ambient.Pause();
-                    }
-                    else
-                    {
-                        game.by_BlackCounter++;
-                    }
+                    game.fd_Fader.BeginFadingToBlack(75, true, game);
                 }
             }
             for (int i = 0; i < i_BulletMax; i++)
@@ -514,7 +475,7 @@ namespace Synthesis
 
             if (game.gameState == State.Paused)
             {
-                spriteBatch.Draw(game.t_BlackScreen, new Vector2(0, 0), new Color(1f, 1f, 1f, 0.5f));
+                spriteBatch.Draw(game.fd_Fader.t_MasterFadeBlack , new Vector2(0, 0), new Color(1f, 1f, 1f, 0.5f));
                 spriteBatch.DrawString(game.fontBig, "Paused", new Vector2(282, 277), Color.DarkGray);
                 spriteBatch.DrawString(game.font, "Shield Strength: " + ship.ShieldStrength + "%", new Vector2(414, 419), Color.DarkGray);
                 spriteBatch.DrawString(game.fontBig, "Paused", new Vector2(285, 280), Color.White);
