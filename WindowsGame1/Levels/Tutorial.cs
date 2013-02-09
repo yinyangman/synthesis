@@ -11,6 +11,8 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Net;
 using Microsoft.Xna.Framework.Storage;
+using SynthesisGameLibrary;
+
 namespace Synthesis
 {
     public class Tutorial : Level
@@ -66,19 +68,14 @@ namespace Synthesis
         Vector2 totalPixelsTravelled;
         Vector2 lastShipPos;
         #endregion
+        public Tutorial(LevelData newData) : base(newData)
+        {
+        }
         public override void Initialize(SoundBank soundBank)
         {
-            TutMusic = soundBank.GetCue("tutMusic");
-
             levelBounds = new Rectangle(75, 75, 874, 460);
-            i_EnemySpawnRate = 0;
-            i_MaxNumberEnemies = 1;
-            i_PhotonSpawnRate = 0;
-            i_MaxNumberPhotons = 1;
-            i_ChloroSpawnRate = 0;
-            i_MaxNumberChloro = 1;
-            i_MaxNumberFused = 1;
 
+            TutMusic = soundBank.GetCue("tutMusic");
             tutCues = new Cue[11];
             for (int j = 0; j < 11; j++)
             {
@@ -205,7 +202,7 @@ namespace Synthesis
                     engine.Photons[0].updatePosition((float)gameTime.ElapsedGameTime.TotalSeconds, engine.f_Friction);
                     if (engine.Photons[0].Position.X < (engine.Photons[0].FusionPosition.X + 1) && engine.Photons[0].Position.X > (engine.Photons[0].FusionPosition.X - 1) && engine.Photons[0].Position.Y < (engine.Photons[0].FusionPosition.Y + 1) && engine.Photons[0].Position.Y > (engine.Photons[0].FusionPosition.Y - 1))
                     {
-                        for (int j = 0; j < i_MaxNumberFused; j++)
+                        for (int j = 0; j < levelData.i_MaxNumberFused; j++)
                         {
                             if (engine.Fused[j].ParticleState == Particle.PState.Dead)
                             {
@@ -218,7 +215,7 @@ namespace Synthesis
                     }
                 }
                 #endregion
-                #region engine.Chloro Updates
+                #region Chloro Updates
                 if (engine.Chlor[0].ParticleState == Particle.PState.Alive)
                 {
                     if (engine.Chlor[0].IsTethered)

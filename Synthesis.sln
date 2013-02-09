@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeeSharp.XNA.Video", "SeeSh
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsGame1Content", "WindowsGame1\Content\WindowsGame1Content.contentproj", "{497142EB-2F32-411F-BB6D-F9F5C7BB56ED}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SynthesisGameLibrary", "WindowsGameLibrary1\SynthesisGameLibrary.csproj", "{81BCA513-A85D-40CB-AC4E-A099B3FC6BAB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -43,6 +45,14 @@ Global
 		{497142EB-2F32-411F-BB6D-F9F5C7BB56ED}.Release|x86.ActiveCfg = Release|x86
 		{497142EB-2F32-411F-BB6D-F9F5C7BB56ED}.Release|Xbox 360.ActiveCfg = Release|x86
 		{497142EB-2F32-411F-BB6D-F9F5C7BB56ED}.Release|Zune.ActiveCfg = Release|x86
+		{81BCA513-A85D-40CB-AC4E-A099B3FC6BAB}.Debug|x86.ActiveCfg = Debug|x86
+		{81BCA513-A85D-40CB-AC4E-A099B3FC6BAB}.Debug|x86.Build.0 = Debug|x86
+		{81BCA513-A85D-40CB-AC4E-A099B3FC6BAB}.Debug|Xbox 360.ActiveCfg = Debug|x86
+		{81BCA513-A85D-40CB-AC4E-A099B3FC6BAB}.Debug|Zune.ActiveCfg = Debug|x86
+		{81BCA513-A85D-40CB-AC4E-A099B3FC6BAB}.Release|x86.ActiveCfg = Release|x86
+		{81BCA513-A85D-40CB-AC4E-A099B3FC6BAB}.Release|x86.Build.0 = Release|x86
+		{81BCA513-A85D-40CB-AC4E-A099B3FC6BAB}.Release|Xbox 360.ActiveCfg = Release|x86
+		{81BCA513-A85D-40CB-AC4E-A099B3FC6BAB}.Release|Zune.ActiveCfg = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<XnaContent>
+  <Asset Type="SynthesisGameLibrary.LevelData[]">
+    <Item>
+      <s_LevelName>Tutorial</s_LevelName>
+      <i_EnemySpawnRate>0</i_EnemySpawnRate>
+      <i_MaxNumberEnemies>1</i_MaxNumberEnemies>
+      <i_PhotonSpawnRate>0</i_PhotonSpawnRate>
+      <i_MaxNumberPhotons>1</i_MaxNumberPhotons>
+      <i_ChloroSpawnRate>0</i_ChloroSpawnRate>
+      <i_MaxNumberChloro>1</i_MaxNumberChloro>
+      <i_MaxNumberFused>1</i_MaxNumberFused>
+      <i_TargetFusions>0</i_TargetFusions>
+  </Item>
+    <Item>
+      <s_LevelName>Level1</s_LevelName>
+      <i_EnemySpawnRate>200</i_EnemySpawnRate>
+      <i_MaxNumberEnemies>10</i_MaxNumberEnemies>
+      <i_PhotonSpawnRate>200</i_PhotonSpawnRate>
+      <i_MaxNumberPhotons>10</i_MaxNumberPhotons>
+      <i_ChloroSpawnRate>200</i_ChloroSpawnRate>
+      <i_MaxNumberChloro>10</i_MaxNumberChloro>
+      <i_MaxNumberFused>100</i_MaxNumberFused>
+      <i_TargetFusions>15</i_TargetFusions>
+    </Item>
+  </Asset>
+</XnaContent>

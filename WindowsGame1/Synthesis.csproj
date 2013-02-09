@@ -216,6 +216,10 @@
     <None Include="WindowsGame1_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\WindowsGameLibrary1\SynthesisGameLibrary.csproj">
+      <Project>{81BCA513-A85D-40CB-AC4E-A099B3FC6BAB}</Project>
+      <Name>SynthesisGameLibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="Content\WindowsGame1Content.contentproj">
       <Project>{497142EB-2F32-411F-BB6D-F9F5C7BB56ED}</Project>
       <Name>WindowsGame1Content %28Content%29</Name>

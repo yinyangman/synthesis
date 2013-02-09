@@ -136,7 +136,7 @@ namespace Synthesis
                 {
                     Ambient.Resume();
                 }
-                if (f_Fusions >= loadedLevel.i_TargetFusions)
+                if (f_Fusions >= loadedLevel.levelData.i_TargetFusions)
                 {
                     game.i_GameOverSel = 1;
                     game.f_LevelCompleteBonus = 500;
@@ -157,7 +157,7 @@ namespace Synthesis
                     UpdateExplosion(ship.Position);
                 }
                 #region Enemy Spawn and Update
-                for (int i = 0; i < loadedLevel.i_MaxNumberEnemies; i++)
+                for (int i = 0; i < loadedLevel.levelData.i_MaxNumberEnemies; i++)
                 {
                     if (enemies[i].EnemyCollision == true)
                     {
@@ -187,7 +187,7 @@ namespace Synthesis
                     {
                         enemies[i].updatePosition((float)gameTime.ElapsedGameTime.TotalSeconds, f_Friction);
                     }
-                    else if (enemies[i].SpawnTimer == loadedLevel.i_EnemySpawnRate)
+                    else if (enemies[i].SpawnTimer == loadedLevel.levelData.i_EnemySpawnRate)
                     {
                         enemies[i] = new Enemy(game);
                         enemies[i].LoadTex(t_EnemySmall, t_EnemyBig);
@@ -198,7 +198,7 @@ namespace Synthesis
                         enemies[i].Texture.GetData(enemies[i].TextureData);
                     }
                 }
-                for (int i = 0; i < loadedLevel.i_MaxNumberEnemies; i++)
+                for (int i = 0; i < loadedLevel.levelData.i_MaxNumberEnemies; i++)
                 {
                     if (enemies[i].Alive == false)
                     {
@@ -229,7 +229,7 @@ namespace Synthesis
                         Photons[i].updatePosition((float)gameTime.ElapsedGameTime.TotalSeconds, f_Friction);
                         if (Photons[i].Position.X < (Photons[i].FusionPosition.X + 1) && Photons[i].Position.X > (Photons[i].FusionPosition.X - 1) && Photons[i].Position.Y < (Photons[i].FusionPosition.Y + 1) && Photons[i].Position.Y > (Photons[i].FusionPosition.Y - 1))
                         {
-                            for (int j = 0; j < loadedLevel.i_MaxNumberFused; j++)
+                            for (int j = 0; j < loadedLevel.levelData.i_MaxNumberFused; j++)
                             {
                                 if (Fused[j].ParticleState == Particle.PState.Dead)
                                 {
@@ -269,7 +269,7 @@ namespace Synthesis
                             Photons[i].Scale += 0.02f;
                         }
                     }
-                    else if (Photons[i].SpawnTimer == loadedLevel.i_PhotonSpawnRate)
+                    else if (Photons[i].SpawnTimer == loadedLevel.levelData.i_PhotonSpawnRate)
                     {
                         Photons[i] = new Particle(loadedLevel.levelBounds);
                         Photons[i].LoadTex(t_Photon);
@@ -332,7 +332,7 @@ namespace Synthesis
                             Chlor[i].Scale += 0.02f;
                         }
                     }
-                    else if (Chlor[i].SpawnTimer == loadedLevel.i_ChloroSpawnRate)
+                    else if (Chlor[i].SpawnTimer == loadedLevel.levelData.i_ChloroSpawnRate)
                     {
                         Chlor[i] = new Particle(loadedLevel.levelBounds);
                         Chlor[i].LoadTex(t_Chlor);
@@ -343,7 +343,7 @@ namespace Synthesis
                     }
                 }
 
-                for (int i = 0; i < loadedLevel.i_MaxNumberPhotons; i++)
+                for (int i = 0; i < loadedLevel.levelData.i_MaxNumberPhotons; i++)
                 {
                     if (Photons[i].ParticleState == Particle.PState.Dead)
                     {
@@ -351,7 +351,7 @@ namespace Synthesis
                         break;
                     }
                 }
-                for (int i = 0; i < loadedLevel.i_MaxNumberChloro; i++)
+                for (int i = 0; i < loadedLevel.levelData.i_MaxNumberChloro; i++)
                 {
                     if (Chlor[i].ParticleState == Particle.PState.Dead)
                     {
@@ -368,8 +368,8 @@ namespace Synthesis
         {
             if (game.gameState != State.Tutorial)
             {
-                spriteBatch.DrawString(game.font, f_Fusions.ToString("00") + "/" + loadedLevel.i_TargetFusions.ToString("00"), new Vector2(46, 727), Color.DarkGray);
-                spriteBatch.DrawString(game.font, f_Fusions.ToString("00") + "/" + loadedLevel.i_TargetFusions.ToString("00"), new Vector2(47, 728), Color.White);
+                spriteBatch.DrawString(game.font, f_Fusions.ToString("00") + "/" + loadedLevel.levelData.i_TargetFusions.ToString("00"), new Vector2(46, 727), Color.DarkGray);
+                spriteBatch.DrawString(game.font, f_Fusions.ToString("00") + "/" + loadedLevel.levelData.i_TargetFusions.ToString("00"), new Vector2(47, 728), Color.White);
                 spriteBatch.Draw(t_ClockBase, new Vector2(15, 650), Color.White);
                 spriteBatch.DrawString(game.font, dt_timer.Minute.ToString("0") + ":" + dt_timer.Second.ToString("00"), new Vector2(25, 668), Color.Black);
                 spriteBatch.Draw(t_Fused, new Vector2(10, 725), null, Color.White, 0, new Vector2(0, 0), new Vector2(0.5f, 0.5f), SpriteEffects.None, 0);
@@ -424,7 +424,7 @@ namespace Synthesis
 
             }
 
-            for (int i = 0; i < loadedLevel.i_MaxNumberEnemies; i++)
+            for (int i = 0; i < loadedLevel.levelData.i_MaxNumberEnemies; i++)
             {
                 enemies[i].ParticleKill.DrawParticle(gameTime, offset);
                 if (enemies[i].Alive == true)
@@ -532,11 +532,11 @@ namespace Synthesis
             }
             PauseCheck(game);
             #region Enemy Movement
-            for (int i = 0; i < loadedLevel.i_MaxNumberEnemies; i++)
+            for (int i = 0; i < loadedLevel.levelData.i_MaxNumberEnemies; i++)
             {
                 if (enemies[i].Alive == true)
                 {
-                    enemies[i].EnemyMovement(ship, Photons, Chlor, loadedLevel.i_MaxNumberPhotons, loadedLevel.i_MaxNumberChloro, game);
+                    enemies[i].EnemyMovement(ship, Photons, Chlor, loadedLevel.levelData.i_MaxNumberPhotons, loadedLevel.levelData.i_MaxNumberChloro, game);
                 }
             }
             #endregion
@@ -1131,8 +1131,8 @@ namespace Synthesis
             i_shipAlpha = 0.5f;
             i_PulseRate = 60;
 
-            enemies = new Enemy[loadedLevel.i_MaxNumberEnemies];
-            for (int j = 0; j < loadedLevel.i_MaxNumberEnemies; j++)
+            enemies = new Enemy[loadedLevel.levelData.i_MaxNumberEnemies];
+            for (int j = 0; j < loadedLevel.levelData.i_MaxNumberEnemies; j++)
             {
                 enemies[j] = new Enemy(game);
                 enemies[j].LoadTex(t_EnemySmall, t_EnemyBig);
@@ -1145,8 +1145,8 @@ namespace Synthesis
                 game.Components.Add(enemies[j].ParticleKill);
             }
 
-            Fused = new Particle[loadedLevel.i_MaxNumberFused];
-            for (int j = 0; j < loadedLevel.i_MaxNumberFused; j++)
+            Fused = new Particle[loadedLevel.levelData.i_MaxNumberFused];
+            for (int j = 0; j < loadedLevel.levelData.i_MaxNumberFused; j++)
             {
                 Fused[j] = new Particle(loadedLevel.levelBounds);
                 Fused[j].Fusion = new FusionParticleSystem(game, 20);
@@ -1154,16 +1154,16 @@ namespace Synthesis
                 Fused[j].LoadTex(t_Fused);
             }
 
-            Photons = new Particle[loadedLevel.i_MaxNumberPhotons];
-            for (int j = 0; j < loadedLevel.i_MaxNumberPhotons; j++)
+            Photons = new Particle[loadedLevel.levelData.i_MaxNumberPhotons];
+            for (int j = 0; j < loadedLevel.levelData.i_MaxNumberPhotons; j++)
             {
                 Photons[j] = new Particle(loadedLevel.levelBounds);
                 Photons[j].LoadTex(t_Photon);
                 Photons[j].Fusion = new FusionParticleSystem(game, 20);
                 game.Components.Add(Photons[j].Fusion);
             }
-            Chlor = new Particle[loadedLevel.i_MaxNumberChloro];
-            for (int j = 0; j < loadedLevel.i_MaxNumberChloro; j++)
+            Chlor = new Particle[loadedLevel.levelData.i_MaxNumberChloro];
+            for (int j = 0; j < loadedLevel.levelData.i_MaxNumberChloro; j++)
             {
                 Chlor[j] = new Particle(loadedLevel.levelBounds);
                 Chlor[j].LoadTex(t_Chlor);

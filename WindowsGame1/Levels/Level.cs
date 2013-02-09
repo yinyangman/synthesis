@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Net;
 using Microsoft.Xna.Framework.Storage;
+using SynthesisGameLibrary;
 
 namespace Synthesis
 {
@@ -33,32 +34,17 @@ namespace Synthesis
         public Rectangle levelRight = new Rectangle(3408, 0, 688, 2304);
 
         //Level Variables
-        public int i_EnemySpawnRate;
-        public int i_MaxNumberEnemies;
-        public int i_PhotonSpawnRate;
-        public int i_MaxNumberPhotons;
-        public int i_ChloroSpawnRate;
-        public int i_MaxNumberChloro;
-        public int i_MaxNumberFused;
-        public int i_TargetFusions;
         public Rectangle levelBounds;
-
+        public LevelData levelData;
         #endregion
-        public Level()
+        public Level(LevelData newData)
         {
+            levelData = newData;
         }
         public virtual void Initialize(SoundBank soundBank)
         {
             //NormalLevel
             levelBounds = new Rectangle(100, 100, 3896, 2104);
-            i_EnemySpawnRate = 200;
-            i_MaxNumberEnemies = 10;
-            i_PhotonSpawnRate = 200;
-            i_MaxNumberPhotons = 10;
-            i_ChloroSpawnRate = 200;
-            i_MaxNumberChloro = 10;
-            i_MaxNumberFused = 100;
-            i_TargetFusions = 15;
         }
         public virtual void LoadContent(ContentManager Content)
         {

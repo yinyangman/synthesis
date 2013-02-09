@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Net;
 using Microsoft.Xna.Framework.Storage;
 using SeeSharp.Xna.Video;
+using SynthesisGameLibrary;
 
 namespace Synthesis
 {
@@ -43,8 +44,10 @@ namespace Synthesis
         #region Global Variables
 
         public Engine gameEngine;
-        public Level level1;
-        public Tutorial tutorialLevel;
+
+        LevelData[] levelsData;
+        Level[] levels;
+
         public State gameState = State.Menu;
 
         GraphicsDeviceManager graphics;
@@ -195,11 +198,25 @@ namespace Synthesis
             controls = new Rectangle(350, 540, 80, 20);
             quit = new Rectangle(350, 560, 60, 20);
 
-            tutorialLevel = new Tutorial();
-            tutorialLevel.Initialize(soundBank);
+            levelsData = Content.Load<LevelData[]>("Levels");
+            levels = new Level[levelsData.Length];
 
-            level1 = new Level();
-            level1.Initialize(soundBank);
+            for (int i = 0; i < levelsData.Length; i++)
+            {
+                Level newLevel;
+
+                if (levelsData[i].s_LevelName == "Tutorial")
+                {
+                    newLevel = new Tutorial(levelsData[i]);
+                }
+                else
+                {
+                    newLevel = new Level(levelsData[i]);
+                }
+
+                newLevel.Initialize(soundBank);
+                levels[i] = newLevel;
+            }
 
             gameEngine = new Engine();
             gameEngine.Initialize(soundBank);
@@ -237,8 +254,11 @@ namespace Synthesis
             t_Loading = Content.Load<Texture2D>("MenusBGrounds//Loading");
             highscores = new Highscore[10];
 
-            tutorialLevel.LoadContent(Content);
-            level1.LoadContent(Content);
+            for (int i = 0; i < levelsData.Length; i++)
+            {
+                levels[i].LoadContent(Content);
+            }
+
             gameEngine.LoadContent(Content);
             fd_Fader.LoadContent(Content);
         }
@@ -303,7 +323,7 @@ namespace Synthesis
             {
                 #region Gameplay Update
                 gameEngine.Update(gameTime, soundBank, this);
-                level1.Update(gameTime, gameEngine, this);
+                LevelForName("Level1").Update(gameTime, gameEngine, this);
                 #endregion
             }
             else if (gameState == State.Controls)
@@ -447,7 +467,6 @@ namespace Synthesis
                 }
 
                 #endregion
-                //gameEngine.Gameover(b_LevelComplete);
             }
             else if (gameState == State.HighScore)
             {
@@ -477,7 +496,7 @@ namespace Synthesis
             {
                 #region Tutorial Update
                 gameEngine.Update(gameTime, soundBank, this);
-                tutorialLevel.Update(gameTime, gameEngine, this);
+                LevelForName("Tutorial").Update(gameTime, gameEngine, this);
                 #endregion
             }
             else if (gameState == State.Loading)
@@ -493,7 +512,7 @@ namespace Synthesis
                 GamePadState gamepadStateCurr = GamePad.GetState(PlayerIndex.One);
                 if (gamepadStateCurr.IsButtonDown(Buttons.A) || Keyboard.GetState().IsKeyDown(Keys.Enter))
                 {
-                    gameEngine.InitalizeLevel(level1, this);
+                    gameEngine.InitalizeLevel(LevelForName("Level1"), this);
                     gameState = State.Gameplay;
                 }
                 #endregion
@@ -585,7 +604,7 @@ namespace Synthesis
             else if (gameState == State.LevelIntro)
             {
                 #region Level Intro Draw
-                spriteBatch.Draw(level1.t_StartBackground, new Vector2(0, 0), Color.White);
+                spriteBatch.Draw(LevelForName("Level1").t_StartBackground, new Vector2(0, 0), Color.White);
                 spriteBatch.DrawString(fontBig, "Level 1", new Vector2(10, 620), Color.White);
                 spriteBatch.DrawString(font, "Press       to start", new Vector2(855, 730), Color.White);
                 spriteBatch.Draw(t_ButtonA, new Vector2(905, 725), null, Color.White, 0, new Vector2(0, 0), new Vector2(0.4f, 0.4f), SpriteEffects.None, 0);
@@ -594,14 +613,14 @@ namespace Synthesis
             else if (gameState == State.Gameplay)
             {
                 #region Gameplay Draw
-                level1.Draw(gameTime, spriteBatch, gameEngine, this);
+                LevelForName("Level1").Draw(gameTime, spriteBatch, gameEngine, this);
                 gameEngine.Draw(gameTime, spriteBatch, this);
                 #endregion
             }
             else if (gameState == State.Tutorial)
             {
                 #region Tutorial Draw
-                tutorialLevel.Draw(gameTime, spriteBatch, gameEngine, this);
+                LevelForName("Tutorial").Draw(gameTime, spriteBatch, gameEngine, this);
                 gameEngine.Draw(gameTime, spriteBatch, this);
                 #endregion
             }
@@ -609,13 +628,13 @@ namespace Synthesis
             {
                 #region Paused Draw
                 gameEngine.Draw(gameTime, spriteBatch, this);
-                level1.Draw(gameTime, spriteBatch, gameEngine, this);
+                LevelForName("Level1").Draw(gameTime, spriteBatch, gameEngine, this);
                 #endregion
             }
             if (gameState == State.GameEnd)
             {
                 #region GameEnd Draw
-                spriteBatch.Draw(level1.t_WinEndBackground, new Vector2(0, 0), Color.White);
+                spriteBatch.Draw(LevelForName("Level1").t_WinEndBackground, new Vector2(0, 0), Color.White);
                 spriteBatch.DrawString(font, "Enemies(Small) Killed: ", new Vector2(100, 500), new Color(1f, 1f, 1f, f_Stats1Alpha));
                 spriteBatch.DrawString(font, "Enemies(Big) Killed: ", new Vector2(119, 530), new Color(1f, 1f, 1f, f_Stats2Alpha));
                 spriteBatch.DrawString(font, "Fusions: ", new Vector2(218, 560), new Color(1f, 1f, 1f, f_Stats3Alpha));
@@ -716,13 +735,13 @@ namespace Synthesis
 
                 if (TutorialOn == true)
                 {
-                    gameEngine.InitalizeLevel(tutorialLevel, this);
+                    gameEngine.InitalizeLevel(LevelForName("Tutorial"), this);
                     gameState = State.Tutorial;
                 }
                 else if (TutorialOn == false)
                 {
                     gameEngine.i_ShipCounter = 75;
-                    gameEngine.InitalizeLevel(level1, this);
+                    gameEngine.InitalizeLevel(LevelForName("Level1"), this);
                     gameState = State.Gameplay;
                 }
             }
@@ -731,6 +750,19 @@ namespace Synthesis
                 gameEngine.Ambient.Pause();
                 gameState = State.GameEnd;
             }
+        }
+
+        Level LevelForName(String levelName)
+        {
+            for (int i = 0; i < levels.Length; i++)
+            {
+                if(levels[i].levelData.s_LevelName == levelName) 
+                {
+                    return levels[i];
+                }
+            }
+
+            return null;
         }
 
         void MouseClick()
@@ -1121,7 +1153,7 @@ namespace Synthesis
                     {
                         if (i_GameOverSel == 0)
                         {
-                            gameEngine.InitalizeLevel(level1, this);
+                            gameEngine.InitalizeLevel(LevelForName("Level1"), this);
                             Reset();
                             gameState = State.Gameplay;
                         }
@@ -1217,7 +1249,7 @@ namespace Synthesis
                 {
                     if (i_GameOverSel == 0)
                     {
-                        gameEngine.InitalizeLevel(level1, this);
+                        gameEngine.InitalizeLevel(LevelForName("Level1"), this);
                         Reset();
                         gameState = State.Gameplay;
                     }
