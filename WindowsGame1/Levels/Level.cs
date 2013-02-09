@@ -58,6 +58,7 @@ namespace Synthesis
             i_ChloroSpawnRate = 200;
             i_MaxNumberChloro = 10;
             i_MaxNumberFused = 100;
+            i_TargetFusions = 15;
         }
         public virtual void LoadContent(ContentManager Content)
         {

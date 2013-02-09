@@ -360,7 +360,7 @@ namespace Synthesis
                 // and increase to 100% once they're finished.
                 float scale = p.Scale * (.75f + .25f * normalizedLifetime);
 
-                game.SpriteBatch.Draw(texture, p.Position + offset, null, p.Color, p.Rotation, origin, scale, SpriteEffects.None, 1f);
+                game.spriteBatch.Draw(texture, p.Position + offset, null, p.Color, p.Rotation, origin, scale, SpriteEffects.None, 1f);
             }
             base.Draw(gameTime);
         }

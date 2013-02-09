@@ -45,67 +45,17 @@ namespace Synthesis
         public Engine gameEngine;
         public Level level1;
         public Tutorial tutorialLevel;
-
         public State gameState = State.Menu;
 
-        VideoPlayer v_Video1;
-        int i_LetterPos = 0;
-        int i_WhichLetter = 1;
-        int i_NewScore = 0;
-        int i_UnderScoreTimer = 0;
-        string s_NewGrade = "";
-        bool entering = false;
-        int i_HighScorePosition = 11;
+        GraphicsDeviceManager graphics;
+        public SpriteBatch spriteBatch;
 
-        bool b_fading = false;
-        bool b_LevelComplete = false;
-
-        // Audio objects
-        AudioEngine engine;
-        public SoundBank soundBank;
-        WaveBank waveBank;
-        Cue MenuMusic;
-        Cue GameOver;
-
-        //textures
-        Texture2D menuImage;
-        Texture2D controlsImage;
-        Texture2D optionsImage;
-        Texture2D t_NewGame;
-        Texture2D t_Options;
-        Texture2D t_Controls;
-        Texture2D t_Quit;
-        Texture2D t_Pixel;
-        public Texture2D t_BlackScreen;
-        Texture2D t_UnderScore;
-        Texture2D t_HighScore;
-        Texture2D t_GORetry;
-        Texture2D t_GOContinue;
-        Texture2D t_GOQuit;
-        Texture2D t_ButtonA;
-        Texture2D t_ButtonB;
-        Texture2D t_ButtonX;
-        Texture2D t_ButtonY;
-        Texture2D t_Loading;
-        Texture2D t_Tick;
-        Texture2D t_Cross;
-
-        Highscore[] highscores;
-
-        //menu
-        Rectangle newGame;
-        Rectangle controls;
-        Rectangle options;
-        Rectangle quit;
-        
-        //misc
+        //Input/Output
+        KeyboardState oldKeyboardState;
+        KeyboardState currentKeyboardState;
         public MouseState mouseStateCurrent;
         public GamePadState gamepadStateOld;
         public KeyboardState keyboardStateOld;
-        int selected = 1;
-        Vector2 cursorPos = Vector2.Zero;
-        Vector2 particleOffset = Vector2.Zero;
-
         public GamePadState gamepadStateCurr;
         public bool lastLTrigger = false;
         public bool lastEnter = false;
@@ -119,63 +69,81 @@ namespace Synthesis
         public bool last4 = false;
         public bool lastRMouse = false;
         public bool lastEscape = false;
-
-        bool TutorialOn = true;
-        float f_BlackAlpha = 0;
-        float f_Stats1Alpha = 0;
-        float f_Stats2Alpha = 0;
-        float f_Stats3Alpha = 0;
-        float f_Stats4Alpha = 0;
-        float f_ChoicesAlpha = 0;
-        float f_LvlCompleteAlpha = 0;
-        float f_GradeAlpha = 0;
-        public int i_GameOverSel = 0;
-        string s_grade = "N/A";
-        string s_Input = "Test";
-
-        Color text1Colour = Color.Red;
-        Color text2Colour = Color.White;
-        int OptionsSelected = 1;
-        bool justStarted = false;
-  
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
-        KeyboardState oldKeyboardState;
-        KeyboardState currentKeyboardState;
-
-        //Particle Effect Variables
-        private static Random random = new Random();
-        public static Random Random
-        {
-            get { return random; }
-        }
-        const float TimeBetweenSmokePlumePuffs = .5f;
-        public SpriteBatch SpriteBatch
-        {
-            get { return spriteBatch; }
-        }
-
-
-        Texture2D menuText;
         public int vibrate = 0;
 
-        int i_TopScore = 4000;
+        //Intro
+        VideoPlayer v_Video1;
+
+        //Game Settings
+        bool TutorialOn = false;
+        bool b_LevelComplete = false;
+
+        // Audio objects
+        public SoundBank soundBank;
+        AudioEngine engine;
+        WaveBank waveBank;
+        Cue MenuMusic;
+        Cue GameOver;
         int i_SoundCounter = 0;
         int i_SoundCounter2 = 0;
 
+        //Textures
+        public Texture2D t_BlackScreen;
+        Texture2D menuImage;
+        Texture2D controlsImage;
+        Texture2D optionsImage;
+        Texture2D t_NewGame;
+        Texture2D t_Options;
+        Texture2D t_Controls;
+        Texture2D t_Quit;
+        Texture2D t_Pixel;
+        Texture2D t_UnderScore;
+        Texture2D t_HighScore;
+        Texture2D t_GORetry;
+        Texture2D t_GOContinue;
+        Texture2D t_GOQuit;
+        Texture2D t_ButtonA;
+        Texture2D t_ButtonB;
+        Texture2D t_ButtonX;
+        Texture2D t_ButtonY;
+        Texture2D t_Loading;
+        Texture2D t_Tick;
+        Texture2D t_Cross;
+        Texture2D menuText;
+
+        //Main Menu
+        Rectangle newGame;
+        Rectangle controls;
+        Rectangle options;
+        Rectangle quit;
+        int OptionsSelected = 1;
+        int selected = 1;
+
+        //Particle Effect Variables
+        private static Random random = new Random();
+        const float TimeBetweenSmokePlumePuffs = .5f;
+
         //Scoring
+        int i_TopScore = 4000;
         float f_Score = 0;
         public float f_EnemiesBigKilled = 0;
         public float f_EnemiesSmallKilled = 0;
         public float f_LevelCompleteBonus = 0;
-
         float f_ScoreTemp = 0;
         float f_EnemiesBigKilledTemp = 0;
         float f_EnemiesSmallKilledTemp = 0;
         float f_FusionsTemp = 0;
         float f_LevelCompleteBonusTemp = 0;
-
-        public byte by_BlackCounter = 0;
+        int i_LetterPos = 0;
+        int i_WhichLetter = 1;
+        int i_NewScore = 0;
+        int i_UnderScoreTimer = 0;
+        string s_NewGrade = "";
+        bool entering = false;
+        int i_HighScorePosition = 11;
+        string s_grade = "N/A";
+        string s_Input = "Test";
+        Highscore[] highscores;
 
         //Fonts
         public SpriteFont font;
@@ -185,6 +153,27 @@ namespace Synthesis
         public SpriteFont fontQuestion;
         public SpriteFont fontSmallText;
 
+        //Fadings
+        public Fader fd_Fader;
+
+        public byte by_BlackCounter = 0;
+        float f_BlackAlpha = 0;
+        float f_Stats1Alpha = 0;
+        float f_Stats2Alpha = 0;
+        float f_Stats3Alpha = 0;
+        float f_Stats4Alpha = 0;
+        float f_ChoicesAlpha = 0;
+        float f_LvlCompleteAlpha = 0;
+        float f_GradeAlpha = 0;
+        bool b_fading = false;
+
+        //Misc
+        Color text1Colour = Color.Red;
+        Color text2Colour = Color.White;
+        bool justStarted = false;
+        Vector2 cursorPos = Vector2.Zero;
+        Vector2 particleOffset = Vector2.Zero;
+        public int i_GameOverSel = 0;
         #endregion
 
         public Game1()
@@ -217,6 +206,9 @@ namespace Synthesis
 
             gameEngine = new Engine();
             gameEngine.Initialize(soundBank);
+
+            fd_Fader = new Fader();
+            fd_Fader.Initialize();
 
             base.Initialize();
         }
@@ -252,12 +244,16 @@ namespace Synthesis
             tutorialLevel.LoadContent(Content);
             level1.LoadContent(Content);
             gameEngine.LoadContent(Content);
+            fd_Fader.LoadContent(Content);
         }
         protected override void UnloadContent()
         {
         }
         protected override void Update(GameTime gameTime)
         {
+            //Updated Fader
+            fd_Fader.Update(gameTime);
+
             // Update the audio engine.
             engine.Update();
 
@@ -325,7 +321,7 @@ namespace Synthesis
                         else if (TutorialOn == false)
                         {
                             gameEngine.i_ShipCounter = 75;
-                            gameEngine.InitalizeLevel(tutorialLevel, this);
+                            gameEngine.InitalizeLevel(level1, this);
                             gameState = State.Gameplay;
                         }
                     }
@@ -749,6 +745,9 @@ namespace Synthesis
                 }
                 #endregion
             }
+
+            //Draw Fader
+            fd_Fader.Draw(spriteBatch);
 
             spriteBatch.End();
             base.Draw(gameTime);
@@ -1391,6 +1390,10 @@ namespace Synthesis
             MenuMusic.Pause();
         }
 
+        public static Random Random
+        {
+            get { return random; }
+        }
         public static float RandomBetween(float min, float max)
         {
             return min + (float)random.NextDouble() * (max - min);

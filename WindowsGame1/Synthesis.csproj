@@ -135,6 +135,7 @@
     <Compile Include="Entities\Bullet.cs" />
     <Compile Include="Engine.cs" />
     <Compile Include="Entities\Enemies\Enemy.cs" />
+    <Compile Include="Fader.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Levels\Level.cs" />
     <Compile Include="Levels\Tutorial.cs" />
