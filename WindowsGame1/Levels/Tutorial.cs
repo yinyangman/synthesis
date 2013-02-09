@@ -389,7 +389,7 @@ namespace Synthesis
                     engine.Chlor[0].ParticleState = Particle.PState.Spawning;
                     engine.Chlor[0].Spawn(new Vector2(768, 350));
                     engine.Chlor[0].SpawnTimer = 0;
-                    game.soundBank.PlayCue("engine.ChlorPop");
+                    game.soundBank.PlayCue("chlorPop");
                 }
             }
             else if (iTutorialState == 6)
@@ -464,7 +464,7 @@ namespace Synthesis
                     engine.Chlor[0].ParticleState = Particle.PState.Spawning;
                     engine.Chlor[0].Spawn(new Vector2(768, 350));
                     engine.Chlor[0].SpawnTimer = 0;
-                    game.soundBank.PlayCue("engine.ChlorPop");
+                    game.soundBank.PlayCue("chlorPop");
                     i_TextBubble = 10;
                     iTutorialState++;
                     dt_TutorialTimer = new DateTime(2000, 1, 1, 0, 0, 0, 0);

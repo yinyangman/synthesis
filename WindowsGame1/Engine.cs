@@ -906,8 +906,11 @@ namespace Synthesis
                     {
                         if (bullets[i].Alive == false)
                         {
-                            Tutorial tutorial = (Tutorial)loadedLevel;
-                            tutorial.tutBulletCounter++;
+                            if (game.gameState == State.Tutorial)
+                            {
+                                Tutorial tutorial = (Tutorial)loadedLevel;
+                                tutorial.tutBulletCounter++;
+                            }
                             v_TurretDirection = ship.TurretDirection;
                             bullets[i].Fire(ship, v_TurretDirection);
                             game.soundBank.PlayCue("lazer");
@@ -936,8 +939,11 @@ namespace Synthesis
                     {
                         if (bullets[i].Alive == false)
                         {
-                            Tutorial tutorial = (Tutorial)loadedLevel;
-                            tutorial.tutBulletCounter++;
+                            if (game.gameState == State.Tutorial)
+                            {
+                                Tutorial tutorial = (Tutorial)loadedLevel;
+                                tutorial.tutBulletCounter++;
+                            }
                             v_TurretDirection = ship.TurretDirection;
                             bullets[i].Fire(ship, v_TurretDirection);
                             game.soundBank.PlayCue("lazer");
@@ -1211,6 +1217,12 @@ namespace Synthesis
                 bullets[j] = new Bullet(t_Bullet);
                 tethers[j] = new Bullet(t_Tether);
             }
+            stupidline = new Bullet[i_StupidLineMax];
+            for (int j = 0; j < i_StupidLineMax; j++)
+            {
+                stupidline[j] = new Bullet(t_Tether);
+            }
+
             ship = new Ship(500, 350, t_Ship);
             ship.Turret = game.Content.Load<Texture2D>("Ship//turret");
             tetherState = TetherState.shooting;
