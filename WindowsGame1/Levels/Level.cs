@@ -21,17 +21,14 @@ namespace Synthesis
         //Textures
         public Texture2D t_StartBackground;
         public Texture2D t_Background;
-        public Texture2D t_WinEndBackground;
-        public Texture2D t_TimeUpEndBackground;
-        public Texture2D t_GameOverBackground;
         public Texture2D t_LevelBounds;
         public Color[] levelBoundsData;
 
         //Frames
-        public Rectangle levelTop = new Rectangle(508, 0, 2900, 306);
-        public Rectangle levelBottom = new Rectangle(508, 1916, 2900, 388);
-        public Rectangle levelLeft = new Rectangle(0, 0, 508, 2304);
-        public Rectangle levelRight = new Rectangle(3408, 0, 688, 2304);
+        //public Rectangle levelTop = new Rectangle(508, 0, 2900, 306);
+        //public Rectangle levelBottom = new Rectangle(508, 1916, 2900, 388);
+        //public Rectangle levelLeft = new Rectangle(0, 0, 508, 2304);
+        //public Rectangle levelRight = new Rectangle(3408, 0, 688, 2304);
 
         //Level Variables
         public Rectangle levelBounds;
@@ -50,9 +47,6 @@ namespace Synthesis
         {
             t_StartBackground = Content.Load<Texture2D>("MenusBGrounds//Level1Start");
             t_Background = Content.Load<Texture2D>("MenusBGrounds//background");
-            t_WinEndBackground = Content.Load<Texture2D>("MenusBGrounds//Level_complete");
-            t_TimeUpEndBackground = Content.Load<Texture2D>("MenusBGrounds//Times_up");
-            t_GameOverBackground = Content.Load<Texture2D>("MenusBGrounds//Game over screen");
             t_LevelBounds = Content.Load<Texture2D>("levelBounds");
             levelBoundsData = new Color[t_LevelBounds.Width * t_LevelBounds.Height];
             t_LevelBounds.GetData(levelBoundsData);

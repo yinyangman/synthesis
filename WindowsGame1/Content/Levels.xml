@@ -11,7 +11,14 @@
       <i_MaxNumberChloro>1</i_MaxNumberChloro>
       <i_MaxNumberFused>1</i_MaxNumberFused>
       <i_TargetFusions>0</i_TargetFusions>
-  </Item>
+      <s_StartBackground>test</s_StartBackground>
+      <s_Background>test</s_Background>
+      <s_LevelBounds>test</s_LevelBounds>
+      <levelTop>508 0 2900 306</levelTop>
+      <levelBottom>508 1916 2900 388</levelBottom>
+      <levelLeft>0 0 508 2304</levelLeft>
+      <levelRight>3408 0 688 2304</levelRight>
+    </Item>
     <Item>
       <s_LevelName>Level1</s_LevelName>
       <i_EnemySpawnRate>200</i_EnemySpawnRate>
@@ -22,6 +29,13 @@
       <i_MaxNumberChloro>10</i_MaxNumberChloro>
       <i_MaxNumberFused>100</i_MaxNumberFused>
       <i_TargetFusions>15</i_TargetFusions>
+      <s_StartBackground>test</s_StartBackground>
+      <s_Background>test</s_Background>
+      <s_LevelBounds>test</s_LevelBounds>
+      <levelTop>508 0 2900 306</levelTop>
+      <levelBottom>508 1916 2900 388</levelBottom>
+      <levelLeft>0 0 508 2304</levelLeft>
+      <levelRight>3408 0 688 2304</levelRight>
     </Item>
   </Asset>
 </XnaContent>

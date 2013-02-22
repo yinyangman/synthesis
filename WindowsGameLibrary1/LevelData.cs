@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
 
 namespace SynthesisGameLibrary
 {
@@ -16,5 +17,13 @@ namespace SynthesisGameLibrary
         public int i_MaxNumberChloro;
         public int i_MaxNumberFused;
         public int i_TargetFusions;
+        public String s_StartBackground;
+        public String s_Background;
+        public String s_LevelBounds;
+        public Rectangle levelTop;
+        public Rectangle levelBottom;
+        public Rectangle levelLeft;
+        public Rectangle levelRight;
+        
     }
 }

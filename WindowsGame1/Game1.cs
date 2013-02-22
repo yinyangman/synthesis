@@ -112,6 +112,9 @@ namespace Synthesis
         Texture2D t_Tick;
         Texture2D t_Cross;
         Texture2D menuText;
+        Texture2D t_WinEndBackground;
+        Texture2D t_TimeUpEndBackground;
+        Texture2D t_GameOverBackground;
 
         //Main Menu
         Rectangle newGame;
@@ -252,6 +255,10 @@ namespace Synthesis
             fontQuestion = Content.Load<SpriteFont>("Fonts//fontQuestion");
             fontSmallText = Content.Load<SpriteFont>("Fonts//fontSmallText");
             t_Loading = Content.Load<Texture2D>("MenusBGrounds//Loading");
+            t_WinEndBackground = Content.Load<Texture2D>("MenusBGrounds//Level_complete");
+            t_TimeUpEndBackground = Content.Load<Texture2D>("MenusBGrounds//Times_up");
+            t_GameOverBackground = Content.Load<Texture2D>("MenusBGrounds//Game over screen");
+
             highscores = new Highscore[10];
 
             for (int i = 0; i < levelsData.Length; i++)
@@ -634,7 +641,7 @@ namespace Synthesis
             if (gameState == State.GameEnd)
             {
                 #region GameEnd Draw
-                spriteBatch.Draw(LevelForName("Level1").t_WinEndBackground, new Vector2(0, 0), Color.White);
+                spriteBatch.Draw(t_WinEndBackground, new Vector2(0, 0), Color.White);
                 spriteBatch.DrawString(font, "Enemies(Small) Killed: ", new Vector2(100, 500), new Color(1f, 1f, 1f, f_Stats1Alpha));
                 spriteBatch.DrawString(font, "Enemies(Big) Killed: ", new Vector2(119, 530), new Color(1f, 1f, 1f, f_Stats2Alpha));
                 spriteBatch.DrawString(font, "Fusions: ", new Vector2(218, 560), new Color(1f, 1f, 1f, f_Stats3Alpha));

@@ -1644,10 +1644,10 @@ namespace Synthesis
 
         public void LEVELCOLLISION(Ship item, Game1 game)
         {
-            if (item.Rectangle.Intersects(loadedLevel.levelLeft) ||
-                item.Rectangle.Intersects(loadedLevel.levelRight) ||
-                item.Rectangle.Intersects(loadedLevel.levelTop) ||
-                item.Rectangle.Intersects(loadedLevel.levelBottom))
+            if (item.Rectangle.Intersects(loadedLevel.levelData.levelLeft) ||
+                item.Rectangle.Intersects(loadedLevel.levelData.levelRight) ||
+                item.Rectangle.Intersects(loadedLevel.levelData.levelTop) ||
+                item.Rectangle.Intersects(loadedLevel.levelData.levelBottom))
             {
 
 
@@ -1663,24 +1663,24 @@ namespace Synthesis
 
                     i_VibrateCounter++;
 
-                    if (item.Position.Y < loadedLevel.levelTop.Height)
+                    if (item.Position.Y < loadedLevel.levelData.levelTop.Height)
                     {
                         item.Position += new Vector2(0, 5);
                         item.Velocity *= new Vector2(1, -f_EdgeDamper);
                     }
-                    else if (item.Position.Y > loadedLevel.levelTop.Height + loadedLevel.levelBottom.Y)
+                    else if (item.Position.Y > loadedLevel.levelData.levelTop.Height + loadedLevel.levelData.levelBottom.Y)
                     {
-                        item.Position -= new Vector2(0, item.Position.Y - (loadedLevel.levelTop.Height + loadedLevel.levelBottom.Y));
+                        item.Position -= new Vector2(0, item.Position.Y - (loadedLevel.levelData.levelTop.Height + loadedLevel.levelData.levelBottom.Y));
                         item.Velocity *= new Vector2(1, -f_EdgeDamper);
                     }
-                    if (item.Position.X < loadedLevel.levelTop.X)
+                    if (item.Position.X < loadedLevel.levelData.levelTop.X)
                     {
-                        item.Position += new Vector2(loadedLevel.levelTop.X - item.Position.X, 0);
+                        item.Position += new Vector2(loadedLevel.levelData.levelTop.X - item.Position.X, 0);
                         item.Velocity *= new Vector2(-f_EdgeDamper, 1);
                     }
-                    else if (item.Position.X > loadedLevel.levelTop.X + loadedLevel.levelRight.X)
+                    else if (item.Position.X > loadedLevel.levelData.levelTop.X + loadedLevel.levelData.levelRight.X)
                     {
-                        item.Position -= new Vector2(item.Position.X - (loadedLevel.levelTop.X + loadedLevel.levelRight.X), 0);
+                        item.Position -= new Vector2(item.Position.X - (loadedLevel.levelData.levelTop.X + loadedLevel.levelData.levelRight.X), 0);
                         item.Velocity *= new Vector2(-f_EdgeDamper, 1);
                     }
 
