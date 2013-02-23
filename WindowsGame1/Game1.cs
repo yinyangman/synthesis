@@ -49,7 +49,10 @@ namespace Synthesis
         //Levels
         LevelData[] levelsData;
         Level[] levels;
-        String currentLevel = "Level2";
+        String currentLevel = "Level1";
+
+        //Enemies
+        EnemyData[] enemiesData;
 
         GraphicsDeviceManager graphics;
         public SpriteBatch spriteBatch;
@@ -202,6 +205,7 @@ namespace Synthesis
             controls = new Rectangle(350, 540, 80, 20);
             quit = new Rectangle(350, 560, 60, 20);
 
+            enemiesData = Content.Load<EnemyData[]>("Enemies");
             levelsData = Content.Load<LevelData[]>("Levels");
             levels = new Level[levelsData.Length];
 
@@ -767,6 +771,18 @@ namespace Synthesis
                 if(levels[i].levelData.s_LevelName == levelName) 
                 {
                     return levels[i];
+                }
+            }
+
+            return null;
+        }
+        public EnemyData EnemyDataForType(EnemyData.Type type)
+        {
+            for (int i = 0; i < enemiesData.Length; i++)
+            {
+                if (enemiesData[i].t_Type == type)
+                {
+                    return enemiesData[i];
                 }
             }
 

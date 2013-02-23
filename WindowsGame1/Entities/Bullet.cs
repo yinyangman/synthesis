@@ -20,6 +20,7 @@ namespace Synthesis
         private Vector2 v_direction;
         private Vector2 v_ShipVelocity;
         public int i_SpawnTimer = 0;
+        public int i_BulletDamage = 1;
 
         public Bullet(Texture2D t_Bullet)
         {

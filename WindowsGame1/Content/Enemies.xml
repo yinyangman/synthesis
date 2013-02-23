@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<XnaContent>
+  <Asset Type="SynthesisGameLibrary.EnemyData[]">
+    <Item>
+      <f_Speed>80</f_Speed>
+      <i_MaxHealth>3</i_MaxHealth>
+      <t_Type>Normal</t_Type>
+      <s_Texture>Enemies//Enemy_Small</s_Texture>
+    </Item>
+    <Item>
+      <f_Speed>120</f_Speed>
+      <i_MaxHealth>5</i_MaxHealth>
+      <t_Type>Destroyer</t_Type>
+      <s_Texture>Enemies//Enemy_Big</s_Texture>
+    </Item>
+  </Asset>
+</XnaContent>

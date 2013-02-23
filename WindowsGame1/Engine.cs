@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Input;
+using SynthesisGameLibrary;
 
 namespace Synthesis
 {
@@ -190,7 +191,7 @@ namespace Synthesis
                     else if (enemies[i].SpawnTimer == loadedLevel.levelData.i_EnemySpawnRate)
                     {
                         enemies[i] = new Enemy(game, loadedLevel);
-                        enemies[i].LoadTex(t_EnemySmall, t_EnemyBig);
+                        enemies[i].LoadTexture(game.Content);
                         enemies[i].Spawn(offset, loadedLevel.levelBounds);
                         enemies[i].SpawnTimer = 0;
                         enemies[i].Rectangle = new Rectangle(((int)enemies[i].Position.X - (enemies[i].Texture.Width / 2)), ((int)enemies[i].Position.Y - (enemies[i].Texture.Height / 2)), enemies[i].Texture.Width, enemies[i].Texture.Height);
@@ -536,7 +537,7 @@ namespace Synthesis
             {
                 if (enemies[i].Alive == true)
                 {
-                    enemies[i].EnemyMovement(ship, Photons, Chlor, loadedLevel.levelData.i_MaxNumberPhotons, loadedLevel.levelData.i_MaxNumberChloro, game);
+                    enemies[i].EnemyMovement(ship, this);
                 }
             }
             #endregion
@@ -1135,7 +1136,7 @@ namespace Synthesis
             for (int j = 0; j < loadedLevel.levelData.i_MaxNumberEnemies; j++)
             {
                 enemies[j] = new Enemy(game, loadedLevel);
-                enemies[j].LoadTex(t_EnemySmall, t_EnemyBig);
+                enemies[j].LoadTexture(game.Content);
                 enemies[j].Rectangle = new Rectangle(((int)enemies[j].Position.X - (enemies[j].Texture.Width / 2)), ((int)enemies[j].Position.Y - (enemies[j].Texture.Height / 2)), enemies[j].Texture.Width, enemies[j].Texture.Height);
                 enemies[j].TextureData = new Color[enemies[j].Texture.Width * enemies[j].Texture.Height];
                 enemies[j].Texture.GetData(enemies[j].TextureData);
@@ -1401,25 +1402,13 @@ namespace Synthesis
                     game.soundBank.PlayCue("enemyDie");
                     game.vibrate = 20;
 
-                    if (enemy.desiredParticle != Enemy.ParticleWant.None)
+                    if (enemy.closestParticle != null)
                     {
-                        if (enemy.desiredParticle == Enemy.ParticleWant.Chloro)
+                        enemy.closestParticle.BeingAttacked = false;
+                        enemy.closestParticle.Attacker = null;
+                        if (enemy.closestParticle.IsTethered == false)
                         {
-                            Chlor[enemy.ClosestChloro].BeingAttacked = false;
-                            Chlor[enemy.ClosestChloro].Attacker = null;
-                            if (Chlor[enemy.ClosestChloro].IsTethered == false)
-                            {
-                                Chlor[enemy.ClosestChloro].Color = Color.White;
-                            }
-                        }
-                        else if (enemy.desiredParticle == Enemy.ParticleWant.Photon)
-                        {
-                            Photons[enemy.ClosestPhoton].BeingAttacked = false;
-                            Photons[enemy.ClosestPhoton].Attacker = null;
-                            if (Photons[enemy.ClosestPhoton].IsTethered == false)
-                            {
-                                Photons[enemy.ClosestPhoton].Color = Color.White;
-                            }
+                            enemy.closestParticle.Color = Color.White;
                         }
                     }
                 }
@@ -1440,25 +1429,13 @@ namespace Synthesis
                                     enemy.Texture.Height,
                                     enemy.TextureData))
                 {
-                    if (enemy.desiredParticle != Enemy.ParticleWant.None)
+                    if (enemy.closestParticle != null)
                     {
-                        if (enemy.desiredParticle == Enemy.ParticleWant.Chloro)
+                        if (enemy.closestParticle == particle)
                         {
-                            if (Chlor[enemy.ClosestChloro] == particle)
-                            {
-                                particle.BeingAttacked = true;
-                                particle.Attacker = enemy;
-                                enemy.attacking = true;
-                            }
-                        }
-                        else if (enemy.desiredParticle == Enemy.ParticleWant.Photon)
-                        {
-                            if (Photons[enemy.ClosestPhoton] == particle)
-                            {
-                                particle.BeingAttacked = true;
-                                particle.Attacker = enemy;
-                                enemy.attacking = true;
-                            }
+                            particle.BeingAttacked = true;
+                            particle.Attacker = enemy;
+                            enemy.attacking = true;
                         }
                     }
                     else
@@ -1530,40 +1507,7 @@ namespace Synthesis
                                     bullet.TextureData))
                 {
                     bullet.Alive = false;
-                    enemy.EnemyCollisionPosition = enemy.Position;// -new Vector2(enemy.Texture.Width / 2, enemy.Texture.Height / 2);
-                    enemy.EnemyCollision = true;
-                    enemy.Alive = false;
-                    game.soundBank.PlayCue("enemyDie");
-                    if (enemy.EnemyType == Enemy.Type.Big)
-                    {
-                        game.f_EnemiesBigKilled++;
-                    }
-                    else if (enemy.EnemyType == Enemy.Type.Small)
-                    {
-                        game.f_EnemiesSmallKilled++;
-                    }
-
-                    if (enemy.desiredParticle != Enemy.ParticleWant.None)
-                    {
-                        if (enemy.desiredParticle == Enemy.ParticleWant.Chloro)
-                        {
-                            Chlor[enemy.ClosestChloro].BeingAttacked = false;
-                            Chlor[enemy.ClosestChloro].Attacker = null;
-                            if (Chlor[enemy.ClosestChloro].IsTethered == false)
-                            {
-                                Chlor[enemy.ClosestChloro].Color = Color.White;
-                            }
-                        }
-                        else if (enemy.desiredParticle == Enemy.ParticleWant.Photon)
-                        {
-                            Photons[enemy.ClosestPhoton].BeingAttacked = false;
-                            Photons[enemy.ClosestPhoton].Attacker = null;
-                            if (Photons[enemy.ClosestPhoton].IsTethered == false)
-                            {
-                                Photons[enemy.ClosestPhoton].Color = Color.White;
-                            }
-                        }
-                    }
+                    enemy.EnemyShot(bullet, game);
                 }
             }
         }

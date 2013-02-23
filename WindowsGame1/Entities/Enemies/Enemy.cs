@@ -10,42 +10,29 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Net;
 using Microsoft.Xna.Framework.Storage;
+using SynthesisGameLibrary;
 
 namespace Synthesis
 {
     public class Enemy : Entity
     {
-        public enum Type
-        {
-            Small = 0,
-            Big = 1
-        }
+        private EnemyData ed_EnemyData;
 
-        public enum ParticleWant
-        {
-            Photon = 0,
-            Chloro = 1,
-            None = 2
-        }
-
-        private float f_EnemySpeed;
-        private bool b_alive;
-        private Type t_Type;
+        private int i_Health;
+        private bool b_Alive;
         private int i_SpawnTimer;
         private ShieldSparkParticleSystem shieldSpark;
         private Vector2 v_EnemyShipCollision = Vector2.Zero;
         private bool b_EnemyShipCollision = false;
         private int i_ShieldSparkCounter = 0;
 
-
         private ParticleKillParticleSystem particleKill;
         private Vector2 v_ParticleKillPosition = Vector2.Zero;
         private bool b_ParticleKill = false;
 
         private int i_ParticleKillCounter = 0;
-        public ParticleWant desiredParticle = ParticleWant.None;
-        public int ClosestPhoton = 0;
-        public int ClosestChloro = 0;
+        public Particle closestParticle;
+
         public bool attacking = false;
         public float f_Rotation = 0;
         public int i_KillingCounter = 0;
@@ -55,163 +42,116 @@ namespace Synthesis
 
         public Enemy(Game1 game, Level level)
         {
-            vPosition = Vector2.Zero;
-            i_KillingCounter = 0;
-            f_colour = 1.0f;
-            i_SpawnTimer = 0;
-            ShieldSpark = new ShieldSparkParticleSystem(game, 8);
-            game.Components.Add(ShieldSpark);
-            ParticleKill = new ParticleKillParticleSystem(game, 9);
-            game.Components.Add(ParticleKill);
-            attacking = false;
-
             int randomType = Game1.Random.Next(0, 100);
 
             if (randomType < level.levelData.i_EnemyMinorChance)
             {
-                t_Type = Type.Small;
+                ed_EnemyData = game.EnemyDataForType(EnemyData.Type.Normal);
             }
-            else if (randomType < level.levelData.i_EnemyMajorChance)
+            else if (randomType < (level.levelData.i_EnemyMajorChance + level.levelData.i_EnemyMinorChance))
             {
-                t_Type = Type.Big;
+                ed_EnemyData = game.EnemyDataForType(EnemyData.Type.Destroyer);
             }
+
+            InitaliseEnemy(game);
         }
-        public Enemy(Game1 game, int type)
+        public Enemy(Game1 game, EnemyData.Type type)
+        {
+            ed_EnemyData = game.EnemyDataForType(type);
+            InitaliseEnemy(game);
+        }
+
+        public void InitaliseEnemy(Game1 game)
         {
             vPosition = Vector2.Zero;
             i_KillingCounter = 0;
             f_colour = 1.0f;
             i_SpawnTimer = 0;
-            t_Type = (Type)type;
             ShieldSpark = new ShieldSparkParticleSystem(game, 8);
             game.Components.Add(ShieldSpark);
             ParticleKill = new ParticleKillParticleSystem(game, 9);
             game.Components.Add(ParticleKill);
             attacking = false;
+
+            i_Health = ed_EnemyData.i_MaxHealth;
+        }
+        public void LoadTexture(ContentManager Content)
+        {
+            tTexture = Content.Load<Texture2D>(ed_EnemyData.s_Texture);
         }
 
-        public void LoadTex(Texture2D t_EnemySmall, Texture2D t_EnemyBig)
+        public void EnemyMovement(Ship ship, Engine engine)
         {
-            if (t_Type == Type.Big)
-            {
-                tTexture = t_EnemyBig;
-                f_EnemySpeed = 120;
-            }
-            else
-            {
-                tTexture = t_EnemySmall;
-                f_EnemySpeed = 80;
-            }
-        }
-        public void EnemyMovement(Ship ship, Particle[] photons, Particle[] chloros, int PhotonsMax, int ChlorosMax, Game1 game)
-        {
-            if (t_Type == Type.Small)
+            if (ed_EnemyData.t_Type == EnemyData.Type.Normal)
             {
                 MoveTowardsPlayer(ship);
             }
-            else if (t_Type == Type.Big)
+            else if (ed_EnemyData.t_Type == EnemyData.Type.Destroyer)
             {
                 if (attacking == false)
                 {
-                    if (photons.Length == 0 && chloros.Length == 0)
+                    float currentDistance = 99999;
+                    for (int i = 0; i < engine.Photons.Length; i++)
                     {
-                        MoveTowardsPlayer(ship);
+                        float distance = Vector2.Distance(engine.Photons[i].Position, Position);
+                        if ((distance < currentDistance) && engine.Photons[i].BeingAttacked == false && engine.Photons[i].ParticleState == Particle.PState.Alive && engine.Photons[i].IsTethered == false)
+                        {
+                            currentDistance = distance;
+                            closestParticle = engine.Photons[i];
+                        }
+                    }
+                    for (int i = 0; i < engine.Chlor.Length; i++)
+                    {
+                        float distance = Vector2.Distance(engine.Chlor[i].Position, Position);
+                        if (distance < currentDistance && engine.Chlor[i].BeingAttacked == false && engine.Chlor[i].ParticleState == Particle.PState.Alive && engine.Chlor[i].IsTethered == false)
+                        {
+                            currentDistance = distance;
+                            closestParticle = engine.Chlor[i];
+                        }
+                    }
+
+                    if (closestParticle != null)
+                    {
+                        vVelocity.X = (((closestParticle.Position.X - vPosition.X) / Vector2.Distance(vPosition, closestParticle.Position)) * ed_EnemyData.f_Speed);
+                        vVelocity.Y = (((closestParticle.Position.Y - vPosition.Y) / Vector2.Distance(vPosition, closestParticle.Position)) * ed_EnemyData.f_Speed);
                     }
                     else
                     {
-                        float currentPhoton = 99999;
-                        float currentChloro = 99999;
-                        for (int i = 0; i < PhotonsMax; i++)
-                        {
-                            float distance = Vector2.Distance(photons[i].Position, Position);
-                            if ((distance < currentPhoton) && photons[i].BeingAttacked == false && photons[i].ParticleState == Particle.PState.Alive && photons[i].IsTethered == false)
-                            {
-                                currentPhoton = distance;
-                                ClosestPhoton = i;
-                            }
-                        }
-                        for (int i = 0; i < ChlorosMax; i++)
-                        {
-                            float distance = Vector2.Distance(chloros[i].Position, Position);
-                            if (distance < currentChloro && chloros[i].BeingAttacked == false && chloros[i].ParticleState == Particle.PState.Alive && chloros[i].IsTethered == false)
-                            {
-                                currentChloro = distance;
-                                ClosestChloro = i;
-                            }
-                        }
-                        if (currentChloro < currentPhoton)
-                        {
-                            //Go after closest chloro
-                            desiredParticle = ParticleWant.Chloro;
-                            vVelocity.X = (((chloros[ClosestChloro].Position.X - vPosition.X) / Vector2.Distance(vPosition, chloros[ClosestChloro].Position)) * f_EnemySpeed);
-                            vVelocity.Y = (((chloros[ClosestChloro].Position.Y - vPosition.Y) / Vector2.Distance(vPosition, chloros[ClosestChloro].Position)) * f_EnemySpeed);
-                        }
-                        else if (currentPhoton < currentChloro)
-                        {
-                            //Go after closest photon
-                            desiredParticle = ParticleWant.Photon;
-                            vVelocity.X = (((photons[ClosestPhoton].Position.X - vPosition.X) / Vector2.Distance(vPosition, photons[ClosestPhoton].Position)) * f_EnemySpeed);
-                            vVelocity.Y = (((photons[ClosestPhoton].Position.Y - vPosition.Y) / Vector2.Distance(vPosition, photons[ClosestPhoton].Position)) * f_EnemySpeed);
-                        }
+                        MoveTowardsPlayer(ship);
                     }
                 }
                 else if (attacking == true)
                 {
-                    if (desiredParticle == ParticleWant.Chloro)
-                    {
-                        vVelocity.X = (((chloros[ClosestChloro].Position.X - vPosition.X) / Vector2.Distance(vPosition, chloros[ClosestChloro].Position)) * f_EnemySpeed);
-                        vVelocity.Y = (((chloros[ClosestChloro].Position.Y - vPosition.Y) / Vector2.Distance(vPosition, chloros[ClosestChloro].Position)) * f_EnemySpeed);
-                    }
-                    else if (desiredParticle == ParticleWant.Photon)
-                    {
-                        vVelocity.X = (((photons[ClosestPhoton].Position.X - vPosition.X) / Vector2.Distance(vPosition, photons[ClosestPhoton].Position)) * f_EnemySpeed);
-                        vVelocity.Y = (((photons[ClosestPhoton].Position.Y - vPosition.Y) / Vector2.Distance(vPosition, photons[ClosestPhoton].Position)) * f_EnemySpeed);
-                    }
+
+                    vVelocity.X = (((closestParticle.Position.X - vPosition.X) / Vector2.Distance(vPosition, closestParticle.Position)) * ed_EnemyData.f_Speed);
+                    vVelocity.Y = (((closestParticle.Position.Y - vPosition.Y) / Vector2.Distance(vPosition, closestParticle.Position)) * ed_EnemyData.f_Speed);
 
                     if (i_KillingCounter < 250)
                     {
                         f_Rotation += 0.15f;
                         i_KillingCounter++;
                         f_colour -= 0.004f;
-                        if (desiredParticle == ParticleWant.Chloro)
-                        {
-                            chloros[ClosestChloro].Color = new Color(1.0f, f_colour, f_colour, 1.0f);
-                        }
-                        else if (desiredParticle == ParticleWant.Photon)
-                        {
-                            photons[ClosestPhoton].Color = new Color(1.0f, f_colour, f_colour, 1.0f);
-                        }
+                        closestParticle.Color = new Color(1.0f, f_colour, f_colour, 1.0f);
                     }
                     else
                     {
                         f_Rotation = 0;
                         i_KillingCounter = 0;
                         f_colour = 1.0f;
-                        if (desiredParticle == ParticleWant.Chloro)
-                        {
-                            p_ParticleKilled = chloros[ClosestChloro];
-                            ParticleKillPosition = chloros[ClosestChloro].Position + new Vector2((chloros[ClosestChloro].Texture.Width / 2), (chloros[ClosestChloro].Texture.Height / 2));
-                            chloros[ClosestChloro].ParticleState = Particle.PState.Dead;
-                        }
-                        else if (desiredParticle == ParticleWant.Photon)
-                        {
-                            p_ParticleKilled = photons[ClosestPhoton];
-                            ParticleKillPosition = photons[ClosestPhoton].Position + new Vector2((photons[ClosestPhoton].Texture.Width / 2), (photons[ClosestPhoton].Texture.Height / 2));
-                            photons[ClosestPhoton].ParticleState = Particle.PState.Dead;
-                        }
+                        p_ParticleKilled = closestParticle;
+                        ParticleKillPosition = closestParticle.Position + new Vector2((closestParticle.Texture.Width / 2), (closestParticle.Texture.Height / 2));
+                        closestParticle.ParticleState = Particle.PState.Dead;
                         attacking = false;
                         IsParticleKill = true;
                     }
                 }
-
             }
         }
         public void MoveTowardsPlayer(Ship ship)
         {
-            vVelocity.X = (((ship.Position.X - vPosition.X) / Vector2.Distance(vPosition, ship.Position)) * f_EnemySpeed);
-            vVelocity.Y = (((ship.Position.Y - vPosition.Y) / Vector2.Distance(vPosition, ship.Position)) * f_EnemySpeed);
+            vVelocity.X = (((ship.Position.X - vPosition.X) / Vector2.Distance(vPosition, ship.Position)) * ed_EnemyData.f_Speed);
+            vVelocity.Y = (((ship.Position.Y - vPosition.Y) / Vector2.Distance(vPosition, ship.Position)) * ed_EnemyData.f_Speed);
         }
-
 
         public void Spawn(Vector2 offset, Rectangle bounding)
         {
@@ -274,22 +214,22 @@ namespace Synthesis
         {
             get
             {
-                return b_alive;
+                return b_Alive;
             }
             set
             {
-                b_alive = value;
+                b_Alive = value;
             }
         }
-        public Type EnemyType
+        public EnemyData.Type EnemyType
         {
             get
             {
-                return t_Type;
+                return ed_EnemyData.t_Type;
             }
             set
             {
-                t_Type = value;
+                ed_EnemyData.t_Type = value;
             }
         }
 
@@ -382,5 +322,39 @@ namespace Synthesis
                 i_ParticleKillCounter = value;
             }
         }
+
+        public void EnemyShot(Bullet bullet, Game1 game)
+        {
+            i_Health -= bullet.i_BulletDamage;
+
+            if (i_Health <= 0)
+            {
+                i_Health = 0;
+
+                EnemyCollisionPosition = Position;// -new Vector2(enemy.Texture.Width / 2, enemy.Texture.Height / 2);
+                EnemyCollision = true;
+                Alive = false;
+                game.soundBank.PlayCue("enemyDie");
+                if (EnemyType == EnemyData.Type.Destroyer)
+                {
+                    game.f_EnemiesBigKilled++;
+                }
+                else if (EnemyType == EnemyData.Type.Normal)
+                {
+                    game.f_EnemiesSmallKilled++;
+                }
+
+                if (closestParticle != null)
+                {
+                    closestParticle.BeingAttacked = false;
+                    closestParticle.Attacker = null;
+                    if (closestParticle.IsTethered == false)
+                    {
+                        closestParticle.Color = Color.White;
+                    }
+                }
+            }
+        }
+
     }
 }

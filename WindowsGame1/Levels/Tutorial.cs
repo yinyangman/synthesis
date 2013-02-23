@@ -430,8 +430,8 @@ namespace Synthesis
                 if (dt_TutorialTimer.Second >= 10)
                 {
                     tutCues[8].Play();
-                    engine.enemies[0] = new Enemy(game, 0);
-                    engine.enemies[0].LoadTex(engine.t_EnemySmall, engine.t_EnemyBig);
+                    engine.enemies[0] = new Enemy(game, EnemyData.Type.Normal);
+                    engine.enemies[0].LoadTexture(game.Content);
                     engine.enemies[0].Spawn(new Vector2(900, 100));
                     engine.enemies[0].SpawnTimer = 0;
                     engine.enemies[0].Rectangle = new Rectangle(((int)engine.enemies[0].Position.X - (engine.enemies[0].Texture.Width / 2)), ((int)engine.enemies[0].Position.Y - (engine.enemies[0].Texture.Height / 2)), engine.enemies[0].Texture.Width, engine.enemies[0].Texture.Height);
@@ -448,8 +448,8 @@ namespace Synthesis
                 if (dt_TutorialTimer.Second >= 10 && engine.enemies[0].Alive == false)
                 {
                     tutCues[9].Play();
-                    engine.enemies[0] = new Enemy(game, 1);
-                    engine.enemies[0].LoadTex(engine.t_EnemySmall, engine.t_EnemyBig);
+                    engine.enemies[0] = new Enemy(game, EnemyData.Type.Destroyer);
+                    engine.enemies[0].LoadTexture(game.Content);
                     engine.enemies[0].Spawn(new Vector2(900, 100));
                     engine.enemies[0].SpawnTimer = 0;
                     engine.enemies[0].Rectangle = new Rectangle(((int)engine.enemies[0].Position.X - (engine.enemies[0].Texture.Width / 2)), ((int)engine.enemies[0].Position.Y - (engine.enemies[0].Texture.Height / 2)), engine.enemies[0].Texture.Width, engine.enemies[0].Texture.Height);
