@@ -868,6 +868,7 @@ namespace Synthesis
                     {
                         if (bullets[i].Alive == false)
                         {
+                            bullets[i].ResetBullet();
                             if (game.gameState == State.Tutorial)
                             {
                                 Tutorial tutorial = (Tutorial)loadedLevel;

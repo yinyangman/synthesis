@@ -25,11 +25,19 @@ namespace Synthesis
         public Bullet(Texture2D t_Bullet)
         {
             vPosition = Vector2.Zero;
-            f_BulletSpeed = 1000;
+            f_BulletSpeed = 500;
             Texture = t_Bullet;
             //rectangle = new Rectangle(((int)vPosition.X - (Texture.Width / 2)), ((int)vPosition.Y - (Texture.Height / 2)), Texture.Width, Texture.Height);
             tTextureData = new Color[tTexture.Width * tTexture.Height];
             tTexture.GetData(tTextureData);
+        }
+
+        public void ResetBullet()
+        {
+            vPosition = Vector2.Zero;
+            f_BulletSpeed = 500;
+            i_SpawnTimer = 0;
+            i_BulletDamage = 1;
         }
 
         public void Fire(Ship ship, Vector2 direction)

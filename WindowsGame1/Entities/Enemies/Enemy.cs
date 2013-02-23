@@ -149,8 +149,8 @@ namespace Synthesis
         }
         public void MoveTowardsPlayer(Ship ship)
         {
-            vVelocity.X = (((ship.Position.X - vPosition.X) / Vector2.Distance(vPosition, ship.Position)) * ed_EnemyData.f_Speed);
-            vVelocity.Y = (((ship.Position.Y - vPosition.Y) / Vector2.Distance(vPosition, ship.Position)) * ed_EnemyData.f_Speed);
+            //vVelocity.X = (((ship.Position.X - vPosition.X) / Vector2.Distance(vPosition, ship.Position)) * ed_EnemyData.f_Speed);
+            //vVelocity.Y = (((ship.Position.Y - vPosition.Y) / Vector2.Distance(vPosition, ship.Position)) * ed_EnemyData.f_Speed);
         }
 
         public void Spawn(Vector2 offset, Rectangle bounding)
@@ -326,15 +326,15 @@ namespace Synthesis
         public void EnemyShot(Bullet bullet, Game1 game)
         {
             i_Health -= bullet.i_BulletDamage;
+            game.soundBank.PlayCue("enemyDie");
+            EnemyCollisionPosition = Position;// -new Vector2(enemy.Texture.Width / 2, enemy.Texture.Height / 2);
+            EnemyCollision = true;
 
             if (i_Health <= 0)
             {
                 i_Health = 0;
-
-                EnemyCollisionPosition = Position;// -new Vector2(enemy.Texture.Width / 2, enemy.Texture.Height / 2);
-                EnemyCollision = true;
                 Alive = false;
-                game.soundBank.PlayCue("enemyDie");
+                
                 if (EnemyType == EnemyData.Type.Destroyer)
                 {
                     game.f_EnemiesBigKilled++;
