@@ -76,7 +76,6 @@ namespace Synthesis
                 t_Type = Type.Big;
             }
         }
-
         public Enemy(Game1 game, int type)
         {
             vPosition = Vector2.Zero;
@@ -104,52 +103,56 @@ namespace Synthesis
                 f_EnemySpeed = 80;
             }
         }
-
         public void EnemyMovement(Ship ship, Particle[] photons, Particle[] chloros, int PhotonsMax, int ChlorosMax, Game1 game)
         {
             if (t_Type == Type.Small)
             {
-                //Move towards the plaer
-                vVelocity.X = (((ship.Position.X - vPosition.X) / Vector2.Distance(vPosition, ship.Position)) * f_EnemySpeed);
-                vVelocity.Y = (((ship.Position.Y - vPosition.Y) / Vector2.Distance(vPosition, ship.Position)) * f_EnemySpeed);
+                MoveTowardsPlayer(ship);
             }
             else if (t_Type == Type.Big)
             {
                 if (attacking == false)
                 {
-                    float currentPhoton = 99999;
-                    float currentChloro = 99999;
-                    for (int i = 0; i < PhotonsMax; i++)
+                    if (photons.Length == 0 && chloros.Length == 0)
                     {
-                        float distance = Vector2.Distance(photons[i].Position, Position);
-                        if ((distance < currentPhoton) && photons[i].BeingAttacked == false && photons[i].ParticleState == Particle.PState.Alive && photons[i].IsTethered == false)
+                        MoveTowardsPlayer(ship);
+                    }
+                    else
+                    {
+                        float currentPhoton = 99999;
+                        float currentChloro = 99999;
+                        for (int i = 0; i < PhotonsMax; i++)
                         {
-                            currentPhoton = distance;
-                            ClosestPhoton = i;
+                            float distance = Vector2.Distance(photons[i].Position, Position);
+                            if ((distance < currentPhoton) && photons[i].BeingAttacked == false && photons[i].ParticleState == Particle.PState.Alive && photons[i].IsTethered == false)
+                            {
+                                currentPhoton = distance;
+                                ClosestPhoton = i;
+                            }
                         }
-                    }
-                    for (int i = 0; i < ChlorosMax; i++)
-                    {
-                        float distance = Vector2.Distance(chloros[i].Position, Position);
-                        if (distance < currentChloro && chloros[i].BeingAttacked == false && chloros[i].ParticleState == Particle.PState.Alive && chloros[i].IsTethered == false)
+                        for (int i = 0; i < ChlorosMax; i++)
                         {
-                            currentChloro = distance;
-                            ClosestChloro = i;
+                            float distance = Vector2.Distance(chloros[i].Position, Position);
+                            if (distance < currentChloro && chloros[i].BeingAttacked == false && chloros[i].ParticleState == Particle.PState.Alive && chloros[i].IsTethered == false)
+                            {
+                                currentChloro = distance;
+                                ClosestChloro = i;
+                            }
                         }
-                    }
-                    if (currentChloro < currentPhoton)
-                    {
-                        //Go after closest chloro
-                        desiredParticle = ParticleWant.Chloro;
-                        vVelocity.X = (((chloros[ClosestChloro].Position.X - vPosition.X) / Vector2.Distance(vPosition, chloros[ClosestChloro].Position)) * f_EnemySpeed);
-                        vVelocity.Y = (((chloros[ClosestChloro].Position.Y - vPosition.Y) / Vector2.Distance(vPosition, chloros[ClosestChloro].Position)) * f_EnemySpeed);
-                    }
-                    else if (currentPhoton < currentChloro)
-                    {
-                        //Go after closest photon
-                        desiredParticle = ParticleWant.Photon;
-                        vVelocity.X = (((photons[ClosestPhoton].Position.X - vPosition.X) / Vector2.Distance(vPosition, photons[ClosestPhoton].Position)) * f_EnemySpeed);
-                        vVelocity.Y = (((photons[ClosestPhoton].Position.Y - vPosition.Y) / Vector2.Distance(vPosition, photons[ClosestPhoton].Position)) * f_EnemySpeed);
+                        if (currentChloro < currentPhoton)
+                        {
+                            //Go after closest chloro
+                            desiredParticle = ParticleWant.Chloro;
+                            vVelocity.X = (((chloros[ClosestChloro].Position.X - vPosition.X) / Vector2.Distance(vPosition, chloros[ClosestChloro].Position)) * f_EnemySpeed);
+                            vVelocity.Y = (((chloros[ClosestChloro].Position.Y - vPosition.Y) / Vector2.Distance(vPosition, chloros[ClosestChloro].Position)) * f_EnemySpeed);
+                        }
+                        else if (currentPhoton < currentChloro)
+                        {
+                            //Go after closest photon
+                            desiredParticle = ParticleWant.Photon;
+                            vVelocity.X = (((photons[ClosestPhoton].Position.X - vPosition.X) / Vector2.Distance(vPosition, photons[ClosestPhoton].Position)) * f_EnemySpeed);
+                            vVelocity.Y = (((photons[ClosestPhoton].Position.Y - vPosition.Y) / Vector2.Distance(vPosition, photons[ClosestPhoton].Position)) * f_EnemySpeed);
+                        }
                     }
                 }
                 else if (attacking == true)
@@ -203,6 +206,12 @@ namespace Synthesis
 
             }
         }
+        public void MoveTowardsPlayer(Ship ship)
+        {
+            vVelocity.X = (((ship.Position.X - vPosition.X) / Vector2.Distance(vPosition, ship.Position)) * f_EnemySpeed);
+            vVelocity.Y = (((ship.Position.Y - vPosition.Y) / Vector2.Distance(vPosition, ship.Position)) * f_EnemySpeed);
+        }
+
 
         public void Spawn(Vector2 offset, Rectangle bounding)
         {
@@ -230,13 +239,11 @@ namespace Synthesis
             Position = new Vector2(Game1.Random.Next(bounding.X + 100, (bounding.X + bounding.Width - 100)), Game1.Random.Next(bounding.Y + 100, (bounding.Y + bounding.Height - 100)));
             Alive = true;
         }
-
         public void Spawn(Vector2 position)
         {
             Position = position;
             Alive = true;
         }
-
         public int SpawnTimer
         {
             get
@@ -263,7 +270,6 @@ namespace Synthesis
 
             return offset;
         }
-
         public bool Alive
         {
             get
@@ -275,7 +281,6 @@ namespace Synthesis
                 b_alive = value;
             }
         }
-
         public Type EnemyType
         {
             get
