@@ -44,11 +44,12 @@ namespace Synthesis
         #region Global Variables
 
         public Engine gameEngine;
+        public State gameState = State.Menu;
 
+        //Levels
         LevelData[] levelsData;
         Level[] levels;
-
-        public State gameState = State.Menu;
+        String currentLevel = "Level2";
 
         GraphicsDeviceManager graphics;
         public SpriteBatch spriteBatch;
@@ -330,7 +331,7 @@ namespace Synthesis
             {
                 #region Gameplay Update
                 gameEngine.Update(gameTime, soundBank, this);
-                LevelForName("Level1").Update(gameTime, gameEngine, this);
+                LevelForName(currentLevel).Update(gameTime, gameEngine, this);
                 #endregion
             }
             else if (gameState == State.Controls)
@@ -519,7 +520,7 @@ namespace Synthesis
                 GamePadState gamepadStateCurr = GamePad.GetState(PlayerIndex.One);
                 if (gamepadStateCurr.IsButtonDown(Buttons.A) || Keyboard.GetState().IsKeyDown(Keys.Enter))
                 {
-                    gameEngine.InitalizeLevel(LevelForName("Level1"), this);
+                    gameEngine.InitalizeLevel(LevelForName(currentLevel), this);
                     gameState = State.Gameplay;
                 }
                 #endregion
@@ -611,7 +612,7 @@ namespace Synthesis
             else if (gameState == State.LevelIntro)
             {
                 #region Level Intro Draw
-                spriteBatch.Draw(LevelForName("Level1").t_StartBackground, new Vector2(0, 0), Color.White);
+                spriteBatch.Draw(LevelForName(currentLevel).t_StartBackground, new Vector2(0, 0), Color.White);
                 spriteBatch.DrawString(fontBig, "Level 1", new Vector2(10, 620), Color.White);
                 spriteBatch.DrawString(font, "Press       to start", new Vector2(855, 730), Color.White);
                 spriteBatch.Draw(t_ButtonA, new Vector2(905, 725), null, Color.White, 0, new Vector2(0, 0), new Vector2(0.4f, 0.4f), SpriteEffects.None, 0);
@@ -620,7 +621,7 @@ namespace Synthesis
             else if (gameState == State.Gameplay)
             {
                 #region Gameplay Draw
-                LevelForName("Level1").Draw(gameTime, spriteBatch, gameEngine, this);
+                LevelForName(currentLevel).Draw(gameTime, spriteBatch, gameEngine, this);
                 gameEngine.Draw(gameTime, spriteBatch, this);
                 #endregion
             }
@@ -635,7 +636,7 @@ namespace Synthesis
             {
                 #region Paused Draw
                 gameEngine.Draw(gameTime, spriteBatch, this);
-                LevelForName("Level1").Draw(gameTime, spriteBatch, gameEngine, this);
+                LevelForName(currentLevel).Draw(gameTime, spriteBatch, gameEngine, this);
                 #endregion
             }
             if (gameState == State.GameEnd)
@@ -748,7 +749,7 @@ namespace Synthesis
                 else if (TutorialOn == false)
                 {
                     gameEngine.i_ShipCounter = 75;
-                    gameEngine.InitalizeLevel(LevelForName("Level1"), this);
+                    gameEngine.InitalizeLevel(LevelForName(currentLevel), this);
                     gameState = State.Gameplay;
                 }
             }
@@ -759,7 +760,7 @@ namespace Synthesis
             }
         }
 
-        Level LevelForName(String levelName)
+        public Level LevelForName(String levelName)
         {
             for (int i = 0; i < levels.Length; i++)
             {
@@ -1160,7 +1161,7 @@ namespace Synthesis
                     {
                         if (i_GameOverSel == 0)
                         {
-                            gameEngine.InitalizeLevel(LevelForName("Level1"), this);
+                            gameEngine.InitalizeLevel(LevelForName(currentLevel), this);
                             Reset();
                             gameState = State.Gameplay;
                         }
@@ -1256,7 +1257,7 @@ namespace Synthesis
                 {
                     if (i_GameOverSel == 0)
                     {
-                        gameEngine.InitalizeLevel(LevelForName("Level1"), this);
+                        gameEngine.InitalizeLevel(LevelForName(currentLevel), this);
                         Reset();
                         gameState = State.Gameplay;
                     }

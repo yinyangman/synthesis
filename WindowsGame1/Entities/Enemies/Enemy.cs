@@ -53,18 +53,28 @@ namespace Synthesis
 
         public Particle p_ParticleKilled;
 
-        public Enemy(Game1 game)
+        public Enemy(Game1 game, Level level)
         {
             vPosition = Vector2.Zero;
             i_KillingCounter = 0;
             f_colour = 1.0f;
             i_SpawnTimer = 0;
-            t_Type = (Type)Game1.Random.Next(0, 2);
             ShieldSpark = new ShieldSparkParticleSystem(game, 8);
             game.Components.Add(ShieldSpark);
             ParticleKill = new ParticleKillParticleSystem(game, 9);
             game.Components.Add(ParticleKill);
             attacking = false;
+
+            int randomType = Game1.Random.Next(0, 100);
+
+            if (randomType < level.levelData.i_EnemyMinorChance)
+            {
+                t_Type = Type.Small;
+            }
+            else if (randomType < level.levelData.i_EnemyMajorChance)
+            {
+                t_Type = Type.Big;
+            }
         }
 
         public Enemy(Game1 game, int type)

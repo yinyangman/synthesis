@@ -24,6 +24,8 @@ namespace SynthesisGameLibrary
         public Rectangle levelBottom;
         public Rectangle levelLeft;
         public Rectangle levelRight;
+        public int i_EnemyMinorChance;
+        public int i_EnemyMajorChance;
         
     }
 }

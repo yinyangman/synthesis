@@ -189,7 +189,7 @@ namespace Synthesis
                     }
                     else if (enemies[i].SpawnTimer == loadedLevel.levelData.i_EnemySpawnRate)
                     {
-                        enemies[i] = new Enemy(game);
+                        enemies[i] = new Enemy(game, loadedLevel);
                         enemies[i].LoadTex(t_EnemySmall, t_EnemyBig);
                         enemies[i].Spawn(offset, loadedLevel.levelBounds);
                         enemies[i].SpawnTimer = 0;
@@ -1134,7 +1134,7 @@ namespace Synthesis
             enemies = new Enemy[loadedLevel.levelData.i_MaxNumberEnemies];
             for (int j = 0; j < loadedLevel.levelData.i_MaxNumberEnemies; j++)
             {
-                enemies[j] = new Enemy(game);
+                enemies[j] = new Enemy(game, loadedLevel);
                 enemies[j].LoadTex(t_EnemySmall, t_EnemyBig);
                 enemies[j].Rectangle = new Rectangle(((int)enemies[j].Position.X - (enemies[j].Texture.Width / 2)), ((int)enemies[j].Position.Y - (enemies[j].Texture.Height / 2)), enemies[j].Texture.Width, enemies[j].Texture.Height);
                 enemies[j].TextureData = new Color[enemies[j].Texture.Width * enemies[j].Texture.Height];

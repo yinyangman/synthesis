@@ -18,6 +18,8 @@
       <levelBottom>508 1916 2900 388</levelBottom>
       <levelLeft>0 0 508 2304</levelLeft>
       <levelRight>3408 0 688 2304</levelRight>
+      <i_EnemyMinorChance>0</i_EnemyMinorChance>
+      <i_EnemyMajorChance>0</i_EnemyMajorChance>
     </Item>
     <Item>
       <s_LevelName>Level1</s_LevelName>
@@ -36,6 +38,28 @@
       <levelBottom>508 1916 2900 388</levelBottom>
       <levelLeft>0 0 508 2304</levelLeft>
       <levelRight>3408 0 688 2304</levelRight>
+      <i_EnemyMinorChance>50</i_EnemyMinorChance>
+      <i_EnemyMajorChance>50</i_EnemyMajorChance>
+    </Item>
+    <Item>
+      <s_LevelName>Level2</s_LevelName>
+      <i_EnemySpawnRate>20</i_EnemySpawnRate>
+      <i_MaxNumberEnemies>100</i_MaxNumberEnemies>
+      <i_PhotonSpawnRate>0</i_PhotonSpawnRate>
+      <i_MaxNumberPhotons>0</i_MaxNumberPhotons>
+      <i_ChloroSpawnRate>0</i_ChloroSpawnRate>
+      <i_MaxNumberChloro>0</i_MaxNumberChloro>
+      <i_MaxNumberFused>0</i_MaxNumberFused>
+      <i_TargetFusions>10</i_TargetFusions>
+      <s_StartBackground>test</s_StartBackground>
+      <s_Background>test</s_Background>
+      <s_LevelBounds>test</s_LevelBounds>
+      <levelTop>508 0 2900 306</levelTop>
+      <levelBottom>508 1916 2900 388</levelBottom>
+      <levelLeft>0 0 508 2304</levelLeft>
+      <levelRight>3408 0 688 2304</levelRight>
+      <i_EnemyMinorChance>0</i_EnemyMinorChance>
+      <i_EnemyMajorChance>100</i_EnemyMajorChance>
     </Item>
   </Asset>
 </XnaContent>
