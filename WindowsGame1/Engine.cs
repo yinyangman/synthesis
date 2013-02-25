@@ -541,6 +541,21 @@ namespace Synthesis
                 }
             }
             #endregion
+
+            for (int i = 0; i < i_BulletMax; i++)
+            {
+                if (bullets[i].Alive == true)
+                {
+                    bullets[i].BulletMovement(ship);
+                    bullets[i].updatePosition((float)gameTime.ElapsedGameTime.TotalSeconds, 1.0f);
+                }
+                if (tethers[i].Alive == true)
+                {
+                    tethers[i].BulletMovement(ship);
+                    tethers[i].updatePosition((float)gameTime.ElapsedGameTime.TotalSeconds, 1.0f);
+                }
+            }
+
             #region Collision
             //if Photon collide with Chlor,  enemy1, enemy2
 
@@ -723,20 +738,6 @@ namespace Synthesis
 
             GamePad.SetVibration(PlayerIndex.One, (0.2f * i_VibrateCounter), (0.2f * i_VibrateCounter));
             #endregion
-            for (int i = 0; i < i_BulletMax; i++)
-            {
-                if (bullets[i].Alive == true)
-                {
-                    bullets[i].BulletMovement(ship);
-                    bullets[i].updatePosition((float)gameTime.ElapsedGameTime.TotalSeconds, 1.0f);
-                }
-                if (tethers[i].Alive == true)
-                {
-                    tethers[i].BulletMovement(ship);
-                    tethers[i].updatePosition((float)gameTime.ElapsedGameTime.TotalSeconds, 1.0f);
-                }
-
-            }
 
             for (int i = 0; i < Fused.Length; i++)
             {
@@ -908,6 +909,7 @@ namespace Synthesis
                                 tutorial.tutBulletCounter++;
                             }
                             v_TurretDirection = ship.TurretDirection;
+                            bullets[i].Position = new Vector2(0, 0);
                             bullets[i].Fire(ship, v_TurretDirection);
                             game.soundBank.PlayCue("lazer");
                             break;

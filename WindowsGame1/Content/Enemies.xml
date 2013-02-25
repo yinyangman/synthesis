@@ -3,7 +3,7 @@
   <Asset Type="SynthesisGameLibrary.EnemyData[]">
     <Item>
       <f_Speed>80</f_Speed>
-      <i_MaxHealth>10</i_MaxHealth>
+      <i_MaxHealth>3</i_MaxHealth>
       <t_Type>Normal</t_Type>
       <s_Texture>Enemies//Enemy_Small</s_Texture>
     </Item>
