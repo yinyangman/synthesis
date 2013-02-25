@@ -61,7 +61,7 @@ namespace Synthesis
         public float i_shipAlpha = 0.5f;
         public int i_PulseRate = 60;
         bool b_Pulsing = false;
-        public bool b_shield = false;
+        public bool b_shield = true;
 
         //Textures
         public Texture2D t_Ship;
@@ -386,11 +386,6 @@ namespace Synthesis
             engineSmoke.DrawParticle(gameTime, offset);
             spriteBatch.Draw(t_EngineSmoke, (ship.Position + offset + (Vector2.Transform(new Vector2(-9, 45), Matrix.CreateRotationZ((float)ship.NextRotation)))), null, Color.Aqua, (float)ship.NextRotation, new Vector2(0, 0), new Vector2(1.0f, 1.0f), SpriteEffects.None, 0);
 
-            if (b_shield)
-            {
-                spriteBatch.Draw(t_Shield, (ship.Position + offset), null, Shield(), (float)ship.NextRotation, new Vector2(30, 50), v_ShieldSize, SpriteEffects.None, 0);
-            }
-
             if (tetherState == Engine.TetherState.tethered)
             {
                 for (int i = 0; i < i_StupidLineMax; i++)
@@ -483,7 +478,13 @@ namespace Synthesis
                 spriteBatch.DrawString(game.font, "Shield Strength: " + ship.ShieldStrength + "%", new Vector2(415, 420), Color.White);
             }
 
+            if (b_shield)
+            {
+                spriteBatch.Draw(t_Shield, (ship.Position + offset), null, Shield(), (float)ship.NextRotation, new Vector2(30, 50), v_ShieldSize, SpriteEffects.None, 0);
+            }
+
             spriteBatch.Draw(t_Crosshair, new Vector2((Mouse.GetState().X - (t_Crosshair.Width / 2)), (Mouse.GetState().Y - (t_Crosshair.Height / 2))), Color.White);
+            spriteBatch.DrawString(game.font, ship.TurretDirection.ToString(), new Vector2(0, 0), Color.Red);
         }
 
         public void GamePlay(GameTime gameTime, Game1 game)
